@@ -76,3 +76,10 @@ VERSION 6 - AUTOMATIC PAY CYCLES
 - Example: September 2026 = 24 Aug 2026 to 19 Sep 2026.
 - The following cycle starts Monday 21 Sep 2026.
 - Super YTD now follows pay cycles rather than simple calendar months.
+
+
+VERSION 7
+- Remembers the last selected month across Calendar, Salary and Timesheets.
+- The selected month persists when moving between pages or reopening the app.
+- Daily dollar amounts were removed from calendar cells.
+- Salary calculations remain unchanged and are still shown on the Salary page.
