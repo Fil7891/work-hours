@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>Timesheets</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div><div class="eyebrow">Work history</div><h1>Timesheets</h1></div>
+  <button id="addEntryBtn" class="ghost">+ Add</button>
+</header>
+
+<main class="container">
+  <section class="card filters">
+    <label>Month
+      <input type="month" id="monthFilter">
+    </label>
+    <button id="exportCsvBtn" class="secondary">Export CSV</button>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h2>Entries</h2>
+      <strong id="monthHours">0h 00m</strong>
+    </div>
+    <div id="entriesList"></div>
+  </section>
+
+  <dialog id="entryDialog">
+    <form method="dialog" id="entryForm" class="dialog-form">
+      <h2 id="dialogTitle">Add entry</h2>
+      <input type="hidden" id="entryId">
+      <label>Date<input type="date" id="entryDate" required></label>
+      <div class="two-col">
+        <label>Start<input type="time" id="entryStart" required></label>
+        <label>Finish<input type="time" id="entryEnd" required></label>
+      </div>
+      <label>Break minutes<input type="number" id="entryBreak" min="0" step="1" value="0"></label>
+      <label>Notes<textarea id="entryNotes" rows="3" placeholder="Job, project or notes"></textarea></label>
+      <div class="dialog-actions">
+        <button type="button" id="deleteEntryBtn" class="danger hidden">Delete</button>
+        <span class="spacer"></span>
+        <button type="button" id="cancelDialogBtn" class="ghost">Cancel</button>
+        <button type="submit" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <nav class="bottom-nav">
+    <a href="index.html">Calendar</a>
+    <a href="timesheets.html" class="active">Timesheets</a>
+    <a href="salary.html">Salary</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+</main>
+
+<script src="js/db.js"></script>
+<script src="js/timesheets.js"></script>
+</body>
+</html>

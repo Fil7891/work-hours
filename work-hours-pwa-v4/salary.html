@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>Salary</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div><div class="eyebrow">Monthly pay estimate</div><h1>Salary</h1></div>
+</header>
+
+<main class="container">
+  <section class="card filters">
+    <label>Month
+      <input type="month" id="salaryMonth">
+    </label>
+  </section>
+
+  <section class="card salary-card">
+    <div class="section-head"><h2 id="salaryTitle">Monthly summary</h2></div>
+    <div class="salary-row"><span>Regular hours</span><strong id="regularHours">0h 00m</strong></div>
+    <div class="salary-row"><span>Overtime hours</span><strong id="overtimeHours">0h 00m</strong></div>
+    <div class="salary-row"><span>Regular earnings</span><strong id="regularPay">$0.00</strong></div>
+    <div class="salary-row"><span>Overtime earnings</span><strong id="overtimePay">$0.00</strong></div>
+    <div class="salary-row total"><span>Gross pay</span><strong id="grossPay">$0.00</strong></div>
+    <div class="salary-row deduction"><span>ATO PAYG withholding</span><strong id="taxPay">-$0.00</strong></div>
+    <div class="salary-row deduction"><span>Other deductions</span><strong id="otherDeductions">-$0.00</strong></div>
+    <div class="salary-row net"><span>Estimated net pay</span><strong id="netPay">$0.00</strong></div>
+
+    <div class="super-box">
+      <div class="super-title">
+        <span>Employer super</span>
+        <strong id="superRateDisplay">12%</strong>
+      </div>
+      <div class="salary-row"><span>Super this month</span><strong id="monthlySuper">$0.00</strong></div>
+      <div class="salary-row"><span>Super year-to-date</span><strong id="ytdSuper">$0.00</strong></div>
+      <div class="salary-row"><span>YTD super earnings base</span><strong id="ytdSuperBase">$0.00</strong></div>
+      <div class="small muted" id="superBasisNote"></div>
+    </div>
+
+    <div class="tax-note">
+      <strong>Tax method:</strong>
+      <span id="taxMethod"></span>
+      <div class="small muted">Uses ATO NAT 1007 Monthly tax table effective from 1 July 2024. Tax offsets are not applied in this version.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Current settings</h2>
+    <div class="stats three">
+      <div><span>Hourly rate</span><strong id="rateDisplay">$0.00</strong></div>
+      <div><span>Overtime</span><strong id="otDisplay">1.5×</strong></div>
+      <div><span>Tax-free threshold</span><strong id="thresholdDisplay">Yes</strong></div>
+    </div>
+  </section>
+
+  <nav class="bottom-nav">
+    <a href="index.html">Calendar</a>
+    <a href="timesheets.html">Timesheets</a>
+    <a href="salary.html" class="active">Salary</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+</main>
+
+<script src="js/db.js"></script>
+<script src="js/tax-table.js"></script>
+<script src="js/salary.js"></script>
+</body>
+</html>
