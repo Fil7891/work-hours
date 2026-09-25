@@ -64,3 +64,15 @@ VERSION 5 - MANUAL PAY RATE SPLIT
 - Split hours cannot exceed the total worked time for the entry.
 - Existing entries remain compatible and are treated as base-rate hours.
 - Salary page reports each pay category separately.
+
+
+VERSION 6 - AUTOMATIC PAY CYCLES
+- Salary is no longer calculated by normal calendar month.
+- Each selected pay month uses the company's payroll-cycle rule:
+  1. Find the last Thursday of the selected month.
+  2. Close the pay cycle on the Saturday before the week containing that Thursday.
+  3. Start the cycle on the Monday after the previous cycle closes.
+- This automatically creates 4-week or 5-week cycles.
+- Example: September 2026 = 24 Aug 2026 to 19 Sep 2026.
+- The following cycle starts Monday 21 Sep 2026.
+- Super YTD now follows pay cycles rather than simple calendar months.

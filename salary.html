@@ -15,13 +15,28 @@
 
 <main class="container">
   <section class="card filters">
-    <label>Month
+    <label>Pay cycle
       <input type="month" id="salaryMonth">
     </label>
   </section>
 
+  <section class="card pay-cycle-card">
+    <div class="section-head">
+      <h2>Pay period</h2>
+      <strong id="cycleWeeks">—</strong>
+    </div>
+    <div class="cycle-range">
+      <span id="cycleStart">—</span>
+      <span class="cycle-arrow">→</span>
+      <span id="cycleEnd">—</span>
+    </div>
+    <p class="small muted">
+      The cycle starts on the Monday after the previous pay cycle closes and ends on the Saturday before the week containing the last Thursday of the selected month.
+    </p>
+  </section>
+
   <section class="card salary-card">
-    <div class="section-head"><h2 id="salaryTitle">Monthly summary</h2></div>
+    <div class="section-head"><h2 id="salaryTitle">Pay summary</h2></div>
     <div class="salary-row"><span>Base hours</span><strong id="baseHours">0h 00m</strong></div>
     <div class="salary-row"><span>Extra hours @ 1.0×</span><strong id="extraNormalHours">0h 00m</strong></div>
     <div class="salary-row"><span>Overtime @ 1.5×</span><strong id="overtime15Hours">0h 00m</strong></div>
