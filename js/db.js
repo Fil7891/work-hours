@@ -30,7 +30,7 @@ async function setKV(store,key,value){ const s=await tx(store,"readwrite"); retu
 async function getSettings(){
   const oldOt = Number(await getKV(STORE_SETTINGS,"overtimeMultiplier") ?? 1.5);
   return {
-    hourlyRate: Number(await getKV(STORE_SETTINGS,"hourlyRate") ?? 38),
+    hourlyRate: Number(await getKV(STORE_SETTINGS,"hourlyRate") ?? 25),
     regularHoursPerDay: Number(await getKV(STORE_SETTINGS,"regularHoursPerDay") ?? 8),
     overtime15Multiplier: Number(await getKV(STORE_SETTINGS,"overtime15Multiplier") ?? oldOt),
     overtime20Multiplier: Number(await getKV(STORE_SETTINGS,"overtime20Multiplier") ?? 2.0),
