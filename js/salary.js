@@ -1,5 +1,5 @@
 const salaryMonth=document.getElementById("salaryMonth");
-salaryMonth.value=monthKey();
+salaryMonth.value=localStorage.getItem("selectedMonth") || monthKey();
 
 function localYmd(d){
   const y=d.getFullYear();
@@ -130,5 +130,8 @@ async function render(){
     :"No tax-free threshold";
 }
 
-salaryMonth.onchange=render;
+salaryMonth.onchange=()=>{
+  localStorage.setItem("selectedMonth", salaryMonth.value);
+  render();
+};
 render();

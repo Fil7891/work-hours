@@ -1,6 +1,6 @@
 const monthFilter=document.getElementById("monthFilter"), entriesList=document.getElementById("entriesList"), monthHours=document.getElementById("monthHours");
 const dlg=document.getElementById("entryDialog"), form=document.getElementById("entryForm"), delBtn=document.getElementById("deleteEntryBtn");
-monthFilter.value=monthKey();
+monthFilter.value=localStorage.getItem("selectedMonth") || monthKey();
 
 async function render(){
   const entries=(await getAllEntries()).filter(e=>e.date.startsWith(monthFilter.value)).sort((a,b)=>b.date.localeCompare(a.date)||b.start.localeCompare(a.start));
@@ -14,6 +14,9 @@ document.getElementById("addEntryBtn").onclick=()=>{clearForm();dlg.showModal();
 document.getElementById("cancelDialogBtn").onclick=()=>dlg.close();
 form.addEventListener("submit",async e=>{e.preventDefault();const id=Number(document.getElementById("entryId").value)||null;const v={date:document.getElementById("entryDate").value,start:document.getElementById("entryStart").value,end:document.getElementById("entryEnd").value,breakMinutes:Number(document.getElementById("entryBreak").value||0),extraNormalHours:Number(document.getElementById("entryExtraNormal").value||0),overtime15Hours:Number(document.getElementById("entryOT15").value||0),overtime20Hours:Number(document.getElementById("entryOT20").value||0),notes:document.getElementById("entryNotes").value.trim()};if(id){v.id=id;await updateEntry(v);}else await addEntry(v);dlg.close();render();});
 delBtn.onclick=async()=>{const id=Number(document.getElementById("entryId").value);if(id&&confirm("Delete this entry?")){await deleteEntry(id);dlg.close();render();}};
-monthFilter.onchange=render;
+monthFilter.onchange=()=>{
+  localStorage.setItem("selectedMonth", monthFilter.value);
+  render();
+};
 document.getElementById("exportCsvBtn").onclick=async()=>{const es=(await getAllEntries()).filter(e=>e.date.startsWith(monthFilter.value));let csv="Date,Start,Finish,Break minutes,Worked hours,Extra normal hours,OT 1.5 hours,OT 2.0 hours,Notes\n";for(const e of es){csv+=`${e.date},${e.start},${e.end},${e.breakMinutes||0},${(entryMinutes(e)/60).toFixed(2)},${Number(e.extraNormalHours||0).toFixed(2)},${Number(e.overtime15Hours||0).toFixed(2)},${Number(e.overtime20Hours||0).toFixed(2)},"${(e.notes||"").replaceAll('"','""')}"\n`;}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=`timesheet-${monthFilter.value}.csv`;a.click();URL.revokeObjectURL(a.href);};
 render();

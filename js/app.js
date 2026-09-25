@@ -1,3 +1,19 @@
+
+function saveSelectedMonthFromDate(d){
+  const value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+  localStorage.setItem("selectedMonth", value);
+}
+
+function loadSelectedMonthDate(){
+  const saved = localStorage.getItem("selectedMonth");
+  if(saved && /^\d{4}-\d{2}$/.test(saved)){
+    const [y,m] = saved.split("-").map(Number);
+    return new Date(y, m-1, 1);
+  }
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), 1);
+}
+
 const monthTitle = document.getElementById("monthTitle");
 const monthSummary = document.getElementById("monthSummary");
 const calendarGrid = document.getElementById("calendarGrid");
@@ -9,7 +25,7 @@ const dlg = document.getElementById("entryDialog");
 const form = document.getElementById("entryForm");
 const delBtn = document.getElementById("deleteEntryBtn");
 
-let shownMonth = new Date();
+let shownMonth = loadSelectedMonthDate();
 shownMonth = new Date(shownMonth.getFullYear(), shownMonth.getMonth(), 1);
 let selectedDate = ymd(new Date());
 let deferredPrompt = null;
@@ -62,7 +78,7 @@ async function renderCalendar() {
     html += `
       <button class="calendar-day ${isSelected?"selected":""} ${isToday?"today":""} ${mins?"worked":""}" data-date="${ds}">
         <span class="day-number">${day}</span>
-        ${mins ? `<span class="day-hours">${compactHours(mins)}</span><span class="day-pay">${fmtMoney(payInfo.pay)}</span>` : `<span class="day-empty">+</span>`}
+        ${mins ? `<span class="day-hours">${compactHours(mins)}</span>` : `<span class="day-empty">+</span>`}
       </button>`;
   }
   calendarGrid.innerHTML = html;
