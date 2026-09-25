@@ -1,6 +1,47 @@
 const salaryMonth=document.getElementById("salaryMonth");
 salaryMonth.value=monthKey();
 
+function localYmd(d){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+function addDays(d, days){
+  const x=new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate()+days);
+  return x;
+}
+
+function lastThursdayOfMonth(year, monthIndex){
+  const d=new Date(year, monthIndex+1, 0); // last day of month
+  const day=d.getDay(); // Sun=0 ... Thu=4
+  const diff=(day-4+7)%7;
+  d.setDate(d.getDate()-diff);
+  return d;
+}
+
+function payCycleEnd(year, monthIndex){
+  // Saturday before the week containing the month's last Thursday.
+  return addDays(lastThursdayOfMonth(year, monthIndex), -5);
+}
+
+function payCycleRange(year, monthIndex){
+  const prevMonthDate=new Date(year, monthIndex-1, 1);
+  const prevEnd=payCycleEnd(prevMonthDate.getFullYear(), prevMonthDate.getMonth());
+  const start=addDays(prevEnd, 2); // following Monday
+  const end=payCycleEnd(year, monthIndex);
+  const nextStart=addDays(end, 2);
+  const weeks=Math.round((nextStart-start)/(7*24*60*60*1000));
+  return {start,end,nextStart,weeks};
+}
+
+function inRange(dateString, start, end){
+  const s=localYmd(start), e=localYmd(end);
+  return dateString>=s && dateString<=e;
+}
+
 function calculatePayForEntries(entries, s){
   const totals={
     total:0,base:0,extraNormal:0,overtime15:0,overtime20:0,
@@ -31,39 +72,49 @@ function calculatePayForEntries(entries, s){
 async function render(){
   const s=await getSettings();
   const allEntries=await getAllEntries();
-  const monthEntries=allEntries.filter(e=>e.date.startsWith(salaryMonth.value));
-  const month=calculatePayForEntries(monthEntries,s);
-
-  const tax=atoMonthlyWithholding(month.gross,s.claimsTaxFreeThreshold);
-  const net=Math.max(0,month.gross-tax-s.otherDeductions);
 
   const [y,m]=salaryMonth.value.split("-");
-  const selectedYear=Number(y), selectedMonth=Number(m);
-  const ytdEntries=allEntries.filter(e=>{
-    const ey=Number(e.date.slice(0,4)), em=Number(e.date.slice(5,7));
-    return ey===selectedYear && em<=selectedMonth;
-  });
+  const selectedYear=Number(y);
+  const selectedMonthIndex=Number(m)-1;
+  const cycle=payCycleRange(selectedYear, selectedMonthIndex);
+
+  const cycleEntries=allEntries.filter(e=>inRange(e.date,cycle.start,cycle.end));
+  const pay=calculatePayForEntries(cycleEntries,s);
+
+  const tax=atoMonthlyWithholding(pay.gross,s.claimsTaxFreeThreshold);
+  const net=Math.max(0,pay.gross-tax-s.otherDeductions);
+
+  // YTD follows pay cycles, not calendar work months.
+  // January YTD begins at the start of the January pay cycle,
+  // which may include days worked in late December.
+  const janCycle=payCycleRange(selectedYear,0);
+  const ytdEntries=allEntries.filter(e=>inRange(e.date,janCycle.start,cycle.end));
   const ytd=calculatePayForEntries(ytdEntries,s);
 
-  document.getElementById("salaryTitle").textContent=
-    new Date(selectedYear,selectedMonth-1,1).toLocaleDateString("en-AU",{month:"long",year:"numeric"});
+  const monthLabel=new Date(selectedYear,selectedMonthIndex,1)
+    .toLocaleDateString("en-AU",{month:"long",year:"numeric"});
 
-  document.getElementById("baseHours").textContent=fmtMinutes(month.base);
-  document.getElementById("extraNormalHours").textContent=fmtMinutes(month.extraNormal);
-  document.getElementById("overtime15Hours").textContent=fmtMinutes(month.overtime15);
-  document.getElementById("overtime20Hours").textContent=fmtMinutes(month.overtime20);
+  document.getElementById("salaryTitle").textContent=`${monthLabel} pay`;
+  document.getElementById("cycleStart").textContent=cycle.start.toLocaleDateString("en-AU",{day:"2-digit",month:"short",year:"numeric"});
+  document.getElementById("cycleEnd").textContent=cycle.end.toLocaleDateString("en-AU",{day:"2-digit",month:"short",year:"numeric"});
+  document.getElementById("cycleWeeks").textContent=`${cycle.weeks}-week cycle`;
 
-  document.getElementById("basePay").textContent=fmtMoney(month.basePay);
-  document.getElementById("extraNormalPay").textContent=fmtMoney(month.extraNormalPay);
-  document.getElementById("overtime15Pay").textContent=fmtMoney(month.overtime15Pay);
-  document.getElementById("overtime20Pay").textContent=fmtMoney(month.overtime20Pay);
+  document.getElementById("baseHours").textContent=fmtMinutes(pay.base);
+  document.getElementById("extraNormalHours").textContent=fmtMinutes(pay.extraNormal);
+  document.getElementById("overtime15Hours").textContent=fmtMinutes(pay.overtime15);
+  document.getElementById("overtime20Hours").textContent=fmtMinutes(pay.overtime20);
 
-  document.getElementById("grossPay").textContent=fmtMoney(month.gross);
+  document.getElementById("basePay").textContent=fmtMoney(pay.basePay);
+  document.getElementById("extraNormalPay").textContent=fmtMoney(pay.extraNormalPay);
+  document.getElementById("overtime15Pay").textContent=fmtMoney(pay.overtime15Pay);
+  document.getElementById("overtime20Pay").textContent=fmtMoney(pay.overtime20Pay);
+
+  document.getElementById("grossPay").textContent=fmtMoney(pay.gross);
   document.getElementById("taxPay").textContent="-"+fmtMoney(tax);
   document.getElementById("otherDeductions").textContent="-"+fmtMoney(s.otherDeductions);
   document.getElementById("netPay").textContent=fmtMoney(net);
 
-  document.getElementById("monthlySuper").textContent=fmtMoney(month.superAmount);
+  document.getElementById("monthlySuper").textContent=fmtMoney(pay.superAmount);
   document.getElementById("ytdSuper").textContent=fmtMoney(ytd.superAmount);
   document.getElementById("ytdSuperBase").textContent=fmtMoney(ytd.superBase);
   document.getElementById("superRateDisplay").textContent=`${s.superRate}%`;
@@ -78,5 +129,6 @@ async function render(){
     ?"With tax-free threshold"
     :"No tax-free threshold";
 }
+
 salaryMonth.onchange=render;
 render();
