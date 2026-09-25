@@ -28,10 +28,12 @@ async function deleteEntry(id){ const s=await tx(STORE_ENTRIES,"readwrite"); ret
 async function getKV(store,key){ const s=await tx(store); return new Promise((res,rej)=>{const r=s.get(key);r.onsuccess=()=>res(r.result?.value);r.onerror=()=>rej(r.error)}); }
 async function setKV(store,key,value){ const s=await tx(store,"readwrite"); return new Promise((res,rej)=>{const r=s.put({key,value});r.onsuccess=()=>res();r.onerror=()=>rej(r.error)}); }
 async function getSettings(){
+  const oldOt = Number(await getKV(STORE_SETTINGS,"overtimeMultiplier") ?? 1.5);
   return {
     hourlyRate: Number(await getKV(STORE_SETTINGS,"hourlyRate") ?? 38),
     regularHoursPerDay: Number(await getKV(STORE_SETTINGS,"regularHoursPerDay") ?? 8),
-    overtimeMultiplier: Number(await getKV(STORE_SETTINGS,"overtimeMultiplier") ?? 1.5),
+    overtime15Multiplier: Number(await getKV(STORE_SETTINGS,"overtime15Multiplier") ?? oldOt),
+    overtime20Multiplier: Number(await getKV(STORE_SETTINGS,"overtime20Multiplier") ?? 2.0),
     claimsTaxFreeThreshold: (await getKV(STORE_SETTINGS,"claimsTaxFreeThreshold")) ?? true,
     superRate: Number(await getKV(STORE_SETTINGS,"superRate") ?? 12),
     includeOvertimeInSuper: (await getKV(STORE_SETTINGS,"includeOvertimeInSuper")) ?? false,
@@ -45,6 +47,31 @@ function minutesBetween(start,end){
   return mins;
 }
 function entryMinutes(e){ return Math.max(0, minutesBetween(e.start,e.end)-Number(e.breakMinutes||0)); }
+
+function hoursFieldToMinutes(v){
+  return Math.max(0, Math.round((Number(v)||0)*60));
+}
+
+function entryPayBreakdown(e, settings){
+  const total = entryMinutes(e);
+  const extraNormal = Math.min(total, hoursFieldToMinutes(e.extraNormalHours));
+  const remainingAfterExtra = Math.max(0, total-extraNormal);
+  const overtime15 = Math.min(remainingAfterExtra, hoursFieldToMinutes(e.overtime15Hours));
+  const remainingAfter15 = Math.max(0, remainingAfterExtra-overtime15);
+  const overtime20 = Math.min(remainingAfter15, hoursFieldToMinutes(e.overtime20Hours));
+  const base = Math.max(0, total-extraNormal-overtime15-overtime20);
+
+  const basePay = base/60*settings.hourlyRate;
+  const extraNormalPay = extraNormal/60*settings.hourlyRate;
+  const overtime15Pay = overtime15/60*settings.hourlyRate*settings.overtime15Multiplier;
+  const overtime20Pay = overtime20/60*settings.hourlyRate*settings.overtime20Multiplier;
+
+  return {
+    total, base, extraNormal, overtime15, overtime20,
+    basePay, extraNormalPay, overtime15Pay, overtime20Pay,
+    gross: basePay+extraNormalPay+overtime15Pay+overtime20Pay
+  };
+}
 function fmtMinutes(mins){ mins=Math.max(0,Math.round(mins)); return `${Math.floor(mins/60)}h ${String(mins%60).padStart(2,"0")}m`; }
 function fmtMoney(v){ return new Intl.NumberFormat("en-AU",{style:"currency",currency:"AUD"}).format(v||0); }
 function ymd(d=new Date()){ return d.toISOString().slice(0,10); }

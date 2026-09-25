@@ -52,3 +52,15 @@ VERSION 4 - PWA INSTALLATION IMPROVEMENTS
 - Added explicit PWA scope and app ID.
 - Designed to be hosted over HTTPS (for example GitHub Pages) and then installed on Android.
 - Once installed and cached, the app can open and work offline.
+
+
+VERSION 5 - MANUAL PAY RATE SPLIT
+- Each work entry can now split worked hours into:
+  * base hours
+  * extra hours at normal rate (1.0x)
+  * overtime at 1.5x
+  * overtime at 2.0x
+- Remaining worked hours are automatically treated as base-rate hours.
+- Split hours cannot exceed the total worked time for the entry.
+- Existing entries remain compatible and are treated as base-rate hours.
+- Salary page reports each pay category separately.

@@ -22,10 +22,14 @@
 
   <section class="card salary-card">
     <div class="section-head"><h2 id="salaryTitle">Monthly summary</h2></div>
-    <div class="salary-row"><span>Regular hours</span><strong id="regularHours">0h 00m</strong></div>
-    <div class="salary-row"><span>Overtime hours</span><strong id="overtimeHours">0h 00m</strong></div>
-    <div class="salary-row"><span>Regular earnings</span><strong id="regularPay">$0.00</strong></div>
-    <div class="salary-row"><span>Overtime earnings</span><strong id="overtimePay">$0.00</strong></div>
+    <div class="salary-row"><span>Base hours</span><strong id="baseHours">0h 00m</strong></div>
+    <div class="salary-row"><span>Extra hours @ 1.0×</span><strong id="extraNormalHours">0h 00m</strong></div>
+    <div class="salary-row"><span>Overtime @ 1.5×</span><strong id="overtime15Hours">0h 00m</strong></div>
+    <div class="salary-row"><span>Overtime @ 2.0×</span><strong id="overtime20Hours">0h 00m</strong></div>
+    <div class="salary-row"><span>Base earnings</span><strong id="basePay">$0.00</strong></div>
+    <div class="salary-row"><span>Extra earnings @ 1.0×</span><strong id="extraNormalPay">$0.00</strong></div>
+    <div class="salary-row"><span>Overtime earnings @ 1.5×</span><strong id="overtime15Pay">$0.00</strong></div>
+    <div class="salary-row"><span>Overtime earnings @ 2.0×</span><strong id="overtime20Pay">$0.00</strong></div>
     <div class="salary-row total"><span>Gross pay</span><strong id="grossPay">$0.00</strong></div>
     <div class="salary-row deduction"><span>ATO PAYG withholding</span><strong id="taxPay">-$0.00</strong></div>
     <div class="salary-row deduction"><span>Other deductions</span><strong id="otherDeductions">-$0.00</strong></div>
@@ -53,7 +57,7 @@
     <h2>Current settings</h2>
     <div class="stats three">
       <div><span>Hourly rate</span><strong id="rateDisplay">$0.00</strong></div>
-      <div><span>Overtime</span><strong id="otDisplay">1.5×</strong></div>
+      <div><span>OT rates</span><strong id="otDisplay">1.5× / 2.0×</strong></div>
       <div><span>Tax-free threshold</span><strong id="thresholdDisplay">Yes</strong></div>
     </div>
   </section>

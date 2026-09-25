@@ -39,7 +39,10 @@
         <label>Start<input type="time" id="entryStart" required></label>
         <label>Finish<input type="time" id="entryEnd" required></label>
       </div>
-      <label>Break minutes<input type="number" id="entryBreak" min="0" step="1" value="0"></label>
+      <label>Break minutes<input type="number" id="entryBreak" min="0" step="1" value="30"></label>
+      <label>Extra hours — normal rate (1.0×)<input type="number" id="entryExtraNormal" min="0" step="0.25" value="0"></label>
+      <label>Overtime hours — 1.5×<input type="number" id="entryOT15" min="0" step="0.25" value="0"></label>
+      <label>Overtime hours — 2.0×<input type="number" id="entryOT20" min="0" step="0.25" value="0"></label>
       <label>Notes<textarea id="entryNotes" rows="3" placeholder="Job, project or notes"></textarea></label>
       <div class="dialog-actions">
         <button type="button" id="deleteEntryBtn" class="danger hidden">Delete</button>

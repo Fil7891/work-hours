@@ -2,7 +2,8 @@ async function load(){
   const s=await getSettings();
   document.getElementById("hourlyRate").value=s.hourlyRate;
   document.getElementById("regularHoursPerDay").value=s.regularHoursPerDay;
-  document.getElementById("overtimeMultiplier").value=s.overtimeMultiplier;
+  document.getElementById("overtime15Multiplier").value=s.overtime15Multiplier;
+  document.getElementById("overtime20Multiplier").value=s.overtime20Multiplier;
   document.getElementById("claimsTaxFreeThreshold").value=String(s.claimsTaxFreeThreshold);
   document.getElementById("superRate").value=s.superRate;
   document.getElementById("includeOvertimeInSuper").value=String(s.includeOvertimeInSuper);
@@ -12,7 +13,8 @@ document.getElementById("settingsForm").addEventListener("submit",async e=>{
   e.preventDefault();
   await setKV(STORE_SETTINGS,"hourlyRate",Number(document.getElementById("hourlyRate").value));
   await setKV(STORE_SETTINGS,"regularHoursPerDay",Number(document.getElementById("regularHoursPerDay").value));
-  await setKV(STORE_SETTINGS,"overtimeMultiplier",Number(document.getElementById("overtimeMultiplier").value));
+  await setKV(STORE_SETTINGS,"overtime15Multiplier",Number(document.getElementById("overtime15Multiplier").value));
+  await setKV(STORE_SETTINGS,"overtime20Multiplier",Number(document.getElementById("overtime20Multiplier").value));
   await setKV(STORE_SETTINGS,"claimsTaxFreeThreshold",document.getElementById("claimsTaxFreeThreshold").value==="true");
   await setKV(STORE_SETTINGS,"superRate",Number(document.getElementById("superRate").value));
   await setKV(STORE_SETTINGS,"includeOvertimeInSuper",document.getElementById("includeOvertimeInSuper").value==="true");
@@ -36,7 +38,7 @@ document.getElementById("restoreInput").onchange=async e=>{
     if(!confirm("Import this backup? Existing entries will stay, and imported entries will be added."))return;
     for(const ent of data.entries){const c={...ent};delete c.id;await addEntry(c);}
     const s=data.settings;
-    for(const k of ["hourlyRate","regularHoursPerDay","overtimeMultiplier","superRate","otherDeductions"]){
+    for(const k of ["hourlyRate","regularHoursPerDay","overtime15Multiplier","overtime20Multiplier","superRate","otherDeductions"]){
       if(k in s) await setKV(STORE_SETTINGS,k,Number(s[k]));
     }
     if("claimsTaxFreeThreshold" in s) await setKV(STORE_SETTINGS,"claimsTaxFreeThreshold",Boolean(s.claimsTaxFreeThreshold));

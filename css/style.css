@@ -7,3 +7,8 @@
 .super-box{margin-top:18px;padding:14px;border:1px solid #d1d5db;border-radius:14px;background:#f9fafb}
 .super-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;font-size:17px;font-weight:850}
 .super-box .salary-row{background:transparent}
+
+.pay-split-box{display:grid;gap:10px;padding:12px;border:1px solid #d1d5db;border-radius:12px;background:#f9fafb}
+.pay-split-title{font-weight:850;font-size:15px}
+.warning-text{padding:9px 10px;border-radius:9px;background:#fef2f2;color:#991b1b;font-size:12px;font-weight:700}
+.entry-preview{grid-template-columns:repeat(2,1fr)}

@@ -50,8 +50,10 @@
 
     <div id="daySummary" class="day-summary hidden">
       <div><span>Total worked</span><strong id="selectedHours">0h 00m</strong></div>
-      <div><span>Regular</span><strong id="selectedRegular">0h 00m</strong></div>
-      <div><span>Overtime</span><strong id="selectedOvertime">0h 00m</strong></div>
+      <div><span>Base hours</span><strong id="selectedBase">0h 00m</strong></div>
+      <div><span>Extra @ 1.0×</span><strong id="selectedExtraNormal">0h 00m</strong></div>
+      <div><span>Overtime @ 1.5×</span><strong id="selectedOT15">0h 00m</strong></div>
+      <div><span>Overtime @ 2.0×</span><strong id="selectedOT20">0h 00m</strong></div>
       <div><span>Gross pay</span><strong id="selectedPay">$0.00</strong></div>
     </div>
     <div id="selectedEntries" class="selected-entries">
@@ -68,12 +70,30 @@
         <label>Start time<input type="time" id="entryStart" required></label>
         <label>Finish time<input type="time" id="entryEnd" required></label>
       </div>
-      <label>Break minutes<input type="number" id="entryBreak" min="0" step="1" value="0"></label>
+      <label>Break minutes<input type="number" id="entryBreak" min="0" step="1" value="30"></label>
+
+      <div class="pay-split-box">
+        <div class="pay-split-title">Pay-rate split</div>
+        <p class="small muted">Enter only the hours paid differently. Any remaining worked hours stay at the normal base rate.</p>
+        <label>Extra hours — normal rate (1.0×)
+          <input type="number" id="entryExtraNormal" min="0" step="0.25" value="0">
+        </label>
+        <label>Overtime hours — 1.5×
+          <input type="number" id="entryOT15" min="0" step="0.25" value="0">
+        </label>
+        <label>Overtime hours — 2.0×
+          <input type="number" id="entryOT20" min="0" step="0.25" value="0">
+        </label>
+        <div id="splitWarning" class="warning-text hidden"></div>
+      </div>
+
       <label>Notes<textarea id="entryNotes" rows="3" placeholder="Job, project or notes"></textarea></label>
 
       <div id="entryPreview" class="entry-preview">
-        <div><span>Hours</span><strong id="previewHours">0h 00m</strong></div>
+        <div><span>Total hours</span><strong id="previewHours">0h 00m</strong></div>
         <div><span>Estimated gross</span><strong id="previewPay">$0.00</strong></div>
+        <div><span>Extra @ 1.0×</span><strong id="previewExtraNormal">0h 00m</strong></div>
+        <div><span>OT @ 1.5× / 2.0×</span><strong id="previewOT">0h 00m / 0h 00m</strong></div>
       </div>
 
       <div class="dialog-actions">
