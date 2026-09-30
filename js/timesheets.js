@@ -129,12 +129,54 @@ function parseYesNo(value){
   return ["yes","y","true","1","on"].includes(v);
 }
 
-function validTime(v){
-  return /^\d{2}:\d{2}$/.test(v);
+function normalizeCsvDate(value){
+  const v=String(value||"").trim();
+  if(!v) return "";
+
+  // ISO: YYYY-MM-DD
+  let m=v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if(m){
+    const y=Number(m[1]), mo=Number(m[2]), d=Number(m[3]);
+    if(mo>=1&&mo<=12&&d>=1&&d<=31){
+      return `${y}-${String(mo).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    }
+  }
+
+  // Australian/common spreadsheet format: D/M/YYYY or DD/MM/YYYY
+  m=v.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if(m){
+    const d=Number(m[1]), mo=Number(m[2]), y=Number(m[3]);
+    if(mo>=1&&mo<=12&&d>=1&&d<=31){
+      return `${y}-${String(mo).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    }
+  }
+
+  return "";
 }
 
-function validDate(v){
-  return /^\d{4}-\d{2}-\d{2}$/.test(v);
+function normalizeCsvTime(value){
+  let v=String(value||"").trim();
+  if(!v) return "";
+
+  // Strip seconds if spreadsheet writes HH:MM:SS
+  let m=v.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?$/i);
+  if(!m) return "";
+
+  let h=Number(m[1]);
+  const min=Number(m[2]);
+  const ampm=(m[4]||"").toUpperCase();
+
+  if(min<0 || min>59) return "";
+
+  if(ampm){
+    if(h<1 || h>12) return "";
+    if(ampm==="AM" && h===12) h=0;
+    if(ampm==="PM" && h!==12) h+=12;
+  }else{
+    if(h<0 || h>23) return "";
+  }
+
+  return `${String(h).padStart(2,"0")}:${String(min).padStart(2,"0")}`;
 }
 
 async function importCsvText(text){
@@ -158,14 +200,18 @@ async function importCsvText(text){
     const row=rows[i];
     const line=i+1;
 
-    const date=csvValue(row,headerMap,["Date"]);
-    const start=csvValue(row,headerMap,["Start"]);
-    const finish=csvValue(row,headerMap,["Finish"]);
+    const rawDate=csvValue(row,headerMap,["Date"]);
+    const rawStart=csvValue(row,headerMap,["Start"]);
+    const rawFinish=csvValue(row,headerMap,["Finish"]);
+
+    const date=normalizeCsvDate(rawDate);
+    const start=normalizeCsvTime(rawStart);
+    const finish=normalizeCsvTime(rawFinish);
     const breakMinutes=Number(csvValue(row,headerMap,["Break minutes"]) || 0);
 
-    if(!validDate(date) || !validTime(start) || !validTime(finish) || !Number.isFinite(breakMinutes) || breakMinutes < 0){
+    if(!date || !start || !finish || !Number.isFinite(breakMinutes) || breakMinutes < 0){
       skipped++;
-      errors.push(`Line ${line}: invalid date, time or break.`);
+      errors.push(`Line ${line}: invalid date/time/break (${rawDate}, ${rawStart}, ${rawFinish}).`);
       continue;
     }
 
