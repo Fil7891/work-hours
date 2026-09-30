@@ -68,5 +68,187 @@ monthFilter.onchange=()=>{
   localStorage.setItem("selectedMonth", monthFilter.value);
   render();
 };
+
+function parseCsv(text){
+  const rows=[];
+  let row=[], field="", inQuotes=false;
+
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+
+    if(inQuotes){
+      if(ch === '"'){
+        if(text[i+1] === '"'){
+          field+='"';
+          i++;
+        }else{
+          inQuotes=false;
+        }
+      }else{
+        field+=ch;
+      }
+    }else{
+      if(ch === '"'){
+        inQuotes=true;
+      }else if(ch === ","){
+        row.push(field);
+        field="";
+      }else if(ch === "\n"){
+        row.push(field);
+        rows.push(row);
+        row=[];
+        field="";
+      }else if(ch !== "\r"){
+        field+=ch;
+      }
+    }
+  }
+
+  if(field.length || row.length){
+    row.push(field);
+    rows.push(row);
+  }
+
+  return rows.filter(r=>r.some(v=>String(v).trim()!==""));
+}
+
+function normalizeCsvHeader(value){
+  return String(value||"").trim().toLowerCase().replace(/\s+/g," ");
+}
+
+function csvValue(row, headerMap, names){
+  for(const name of names){
+    const idx=headerMap.get(normalizeCsvHeader(name));
+    if(idx !== undefined) return String(row[idx] ?? "").trim();
+  }
+  return "";
+}
+
+function parseYesNo(value){
+  const v=String(value||"").trim().toLowerCase();
+  return ["yes","y","true","1","on"].includes(v);
+}
+
+function validTime(v){
+  return /^\d{2}:\d{2}$/.test(v);
+}
+
+function validDate(v){
+  return /^\d{4}-\d{2}-\d{2}$/.test(v);
+}
+
+async function importCsvText(text){
+  const rows=parseCsv(text);
+  if(rows.length < 2) throw new Error("The CSV file has no data rows.");
+
+  const headers=rows[0].map(normalizeCsvHeader);
+  const headerMap=new Map(headers.map((h,i)=>[h,i]));
+
+  for(const required of ["date","start","finish","break minutes"]){
+    if(!headerMap.has(required)){
+      throw new Error(`Missing required column: ${required}`);
+    }
+  }
+
+  let imported=0;
+  let skipped=0;
+  const errors=[];
+
+  for(let i=1;i<rows.length;i++){
+    const row=rows[i];
+    const line=i+1;
+
+    const date=csvValue(row,headerMap,["Date"]);
+    const start=csvValue(row,headerMap,["Start"]);
+    const finish=csvValue(row,headerMap,["Finish"]);
+    const breakMinutes=Number(csvValue(row,headerMap,["Break minutes"]) || 0);
+
+    if(!validDate(date) || !validTime(start) || !validTime(finish) || !Number.isFinite(breakMinutes) || breakMinutes < 0){
+      skipped++;
+      errors.push(`Line ${line}: invalid date, time or break.`);
+      continue;
+    }
+
+    const extraNormalHours=Number(csvValue(row,headerMap,["Extra normal hours"]) || 0);
+    const overtime15Hours=Number(csvValue(row,headerMap,["OT 1.5 hours"]) || 0);
+    const overtime20Hours=Number(csvValue(row,headerMap,["OT 2.0 hours"]) || 0);
+    const travelAll15=parseYesNo(csvValue(row,headerMap,["Travel day all 1.5"]));
+    const notes=csvValue(row,headerMap,["Notes"]);
+
+    if([extraNormalHours,overtime15Hours,overtime20Hours].some(v=>!Number.isFinite(v) || v<0)){
+      skipped++;
+      errors.push(`Line ${line}: invalid pay-rate hours.`);
+      continue;
+    }
+
+    const entry={
+      date,
+      start,
+      end:finish,
+      periods:[{start,end:finish}],
+      breakMinutes,
+      extraNormalHours,
+      overtime15Hours,
+      overtime20Hours,
+      travelAll15,
+      notes
+    };
+
+    const worked=entryMinutes(entry);
+    const split=travelAll15 ? 0 :
+      hoursFieldToMinutes(extraNormalHours)+
+      hoursFieldToMinutes(overtime15Hours)+
+      hoursFieldToMinutes(overtime20Hours);
+
+    if(split > worked){
+      skipped++;
+      errors.push(`Line ${line}: extra/overtime hours exceed worked hours.`);
+      continue;
+    }
+
+    await addEntry(entry);
+    imported++;
+  }
+
+  return {imported,skipped,errors};
+}
+
+const importCsvBtn=document.getElementById("importCsvBtn");
+const importCsvFile=document.getElementById("importCsvFile");
+
+if(importCsvBtn && importCsvFile){
+  importCsvBtn.addEventListener("click",()=>{
+    importCsvFile.value="";
+    importCsvFile.click();
+  });
+
+  importCsvFile.addEventListener("change",async()=>{
+    const file=importCsvFile.files?.[0];
+    if(!file) return;
+
+    try{
+      const text=await file.text();
+      const result=await importCsvText(text);
+
+      let msg=`Imported ${result.imported} entr${result.imported===1?"y":"ies"}.`;
+      if(result.skipped){
+        msg+=`\nSkipped ${result.skipped} row${result.skipped===1?"":"s"}.`;
+      }
+      if(result.errors.length){
+        msg+=`\n\n${result.errors.slice(0,8).join("\n")}`;
+        if(result.errors.length>8){
+          msg+=`\n...and ${result.errors.length-8} more.`;
+        }
+      }
+
+      alert(msg);
+      render();
+    }catch(err){
+      alert(`Could not import CSV.\n${err.message || err}`);
+    }
+  });
+}
+
+
 document.getElementById("exportCsvBtn").onclick=async()=>{const es=(await getAllEntries()).filter(e=>e.date.startsWith(monthFilter.value));let csv="Date,Start,Finish,Break minutes,Worked hours,Travel day all 1.5,Extra normal hours,OT 1.5 hours,OT 2.0 hours,Notes\n";for(const e of es){csv+=`${e.date},${e.start},${e.end},${e.breakMinutes||0},${(entryMinutes(e)/60).toFixed(2)},${e.travelAll15===true?"Yes":"No"},${Number(e.extraNormalHours||0).toFixed(2)},${Number(e.overtime15Hours||0).toFixed(2)},${Number(e.overtime20Hours||0).toFixed(2)},"${(e.notes||"").replaceAll('"','""')}"\n`;}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=`timesheet-${monthFilter.value}.csv`;a.click();URL.revokeObjectURL(a.href);};
 render();

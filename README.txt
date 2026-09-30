@@ -113,3 +113,14 @@ VERSION 10 - MULTIPLE WORK PERIODS
 - All existing pay-rate, travel-day, salary, tax-year, timesheet and settings functions remain in place.
 - New unsaved-user default hourly rate changed from $38.00 to $26.44.
 - An already saved hourly rate is NOT overwritten.
+
+
+VERSION 11 - CSV IMPORT
+- Based on Version 10.
+- Added Import CSV on Timesheets.
+- Uses the same columns as Export CSV.
+- Required: Date, Start, Finish, Break minutes.
+- Supports Travel day all 1.5, Extra normal hours, OT 1.5 hours, OT 2.0 hours, Notes.
+- Imported entries are added; existing records are not deleted.
+- Invalid rows are skipped and reported.
+- Imported CSV rows create a single work period from Start to Finish.

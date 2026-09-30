@@ -1,4 +1,4 @@
-const CACHE="work-hours-v10";
+const CACHE="work-hours-v11";
 const ASSETS=[
   "./","index.html","timesheets.html","salary.html","tax-year.html","settings.html",
   "css/style.css","js/db.js","js/app.js","js/timesheets.js",
