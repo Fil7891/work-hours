@@ -72,7 +72,12 @@
       </div>
       <label>Break minutes<input type="number" id="entryBreak" min="0" step="1" value="30"></label>
 
-      <div class="pay-split-box">
+      <label class="travel-rate-toggle">
+        <input type="checkbox" id="entryTravelAll15">
+        <span><strong>Travel day</strong><small>Pay all worked hours at 1.5×</small></span>
+      </label>
+
+      <div class="pay-split-box" id="manualRateSplit">
         <div class="pay-split-title">Pay-rate split</div>
         <p class="small muted">Enter only the hours paid differently. Any remaining worked hours stay at the normal base rate.</p>
         <label>Extra hours — normal rate (1.0×)
@@ -109,6 +114,7 @@
     <a href="index.html" class="active">Calendar</a>
     <a href="timesheets.html">Timesheets</a>
     <a href="salary.html">Salary</a>
+    <a href="tax-year.html">Tax Year</a>
     <a href="settings.html">Settings</a>
   </nav>
 </main>

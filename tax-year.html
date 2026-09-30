@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Tax Year</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div><div class="eyebrow">Annual summary</div><h1>Tax Year</h1></div>
+</header>
+
+<main class="container">
+  <section class="card filters">
+    <label>Financial year
+      <select id="taxYearSelect">
+        <option value="2024-25">2024/25</option>
+        <option value="2025-26">2025/26</option>
+        <option value="2026-27">2026/27</option>
+      </select>
+    </label>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><h2>Income summary</h2></div>
+    <div class="salary-row"><span>Work income</span><strong id="workIncome">$0.00</strong></div>
+    <label class="tax-input-row">Other taxable income
+      <input type="number" id="otherIncome" min="0" step="0.01" inputmode="decimal" value="0">
+    </label>
+    <div class="salary-row total"><span>Total income</span><strong id="totalIncome">$0.00</strong></div>
+    <div class="tax-note">
+      <strong>PAYG withheld</strong>
+      <span id="estimatedPaygText" class="small muted">Estimated from the app's monthly PAYG table.</span>
+      <label>Actual PAYG withheld (optional)
+        <input type="number" id="actualPayg" min="0" step="0.01" inputmode="decimal" placeholder="Leave blank to use estimate">
+      </label>
+      <div class="salary-row"><span>PAYG used in estimate</span><strong id="paygUsed">$0.00</strong></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="section-head">
+      <h2>Work-related expenses</h2>
+      <button id="addExpenseBtn" class="primary">+ Expense</button>
+    </div>
+    <div id="expenseList" class="expense-list"></div>
+    <div class="salary-row total"><span>Total deductions</span><strong id="totalDeductions">$0.00</strong></div>
+  </section>
+
+  <section class="card">
+    <div class="section-head"><h2>Estimated tax return</h2></div>
+    <div class="salary-row"><span>Total income</span><strong id="resultIncome">$0.00</strong></div>
+    <div class="salary-row deduction"><span>Deductions</span><strong id="resultDeductions">-$0.00</strong></div>
+    <div class="salary-row total"><span>Estimated taxable income</span><strong id="taxableIncome">$0.00</strong></div>
+    <div class="salary-row"><span>Income tax before offsets</span><strong id="incomeTaxBeforeOffsets">$0.00</strong></div>
+    <div class="salary-row"><span>Low income tax offset</span><strong id="lito">-$0.00</strong></div>
+    <label class="check-row tax-check">
+      <input type="checkbox" id="includeMedicare" checked>
+      <span>Include simple 2% Medicare levy estimate</span>
+    </label>
+    <div class="salary-row"><span>Medicare levy estimate</span><strong id="medicareLevy">$0.00</strong></div>
+    <div class="salary-row"><span>Estimated tax liability</span><strong id="taxLiability">$0.00</strong></div>
+    <div class="salary-row"><span>PAYG withheld</span><strong id="resultPayg">-$0.00</strong></div>
+    <div id="taxOutcomeRow" class="salary-row net"><span id="taxOutcomeLabel">Estimated refund</span><strong id="taxOutcome">$0.00</strong></div>
+    <div class="info-box">
+      Estimate only. It assumes Australian resident individual tax rates. The Medicare levy is a simple 2% estimate and does not apply low-income reductions, exemptions or the Medicare levy surcharge. Other offsets, HELP/HECS, investments, private health insurance and other tax circumstances are not included.
+    </div>
+  </section>
+
+  <dialog id="expenseDialog">
+    <form id="expenseForm" class="dialog-form">
+      <h2 id="expenseDialogTitle">Add expense</h2>
+      <input type="hidden" id="expenseId">
+      <label>Date<input type="date" id="expenseDate" required></label>
+      <label>Category
+        <select id="expenseCategory" required>
+          <option>Tools & equipment</option>
+          <option>Vehicle & travel</option>
+          <option>Phone & internet</option>
+          <option>Training & courses</option>
+          <option>Uniform & protective clothing</option>
+          <option>Home office</option>
+          <option>Union & professional fees</option>
+          <option>Other</option>
+        </select>
+      </label>
+      <label>Description<input type="text" id="expenseDescription" maxlength="120" placeholder="What was the expense for?"></label>
+      <label>Deductible amount<input type="number" id="expenseAmount" min="0" step="0.01" inputmode="decimal" required></label>
+      <div class="dialog-actions">
+        <button type="button" id="deleteExpenseBtn" class="danger hidden">Delete</button>
+        <span class="spacer"></span>
+        <button type="button" id="cancelExpenseBtn" class="ghost">Cancel</button>
+        <button type="submit" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <nav class="bottom-nav">
+    <a href="index.html">Calendar</a>
+    <a href="timesheets.html">Timesheets</a>
+    <a href="salary.html">Salary</a>
+    <a href="tax-year.html" class="active">Tax Year</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+</main>
+
+<script src="js/db.js"></script>
+<script src="js/tax-table.js"></script>
+<script src="js/tax-year.js"></script>
+</body>
+</html>

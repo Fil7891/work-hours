@@ -128,6 +128,7 @@ async function renderSelectedDay() {
   document.querySelectorAll(".selected-entry").forEach(el=>el.onclick=()=>openEdit(Number(el.dataset.id)));
 }
 function rateSplitText(e) {
+  if (e.travelAll15 === true) return " · Travel day: all @1.5×";
   const bits = [];
   if (Number(e.extraNormalHours||0) > 0) bits.push(`${Number(e.extraNormalHours)}h @1.0×`);
   if (Number(e.overtime15Hours||0) > 0) bits.push(`${Number(e.overtime15Hours)}h @1.5×`);
@@ -146,6 +147,8 @@ function clearForm() {
   document.getElementById("entryExtraNormal").value = 0;
   document.getElementById("entryOT15").value = 0;
   document.getElementById("entryOT20").value = 0;
+  document.getElementById("entryTravelAll15").checked = false;
+  updateTravelModeUI();
   document.getElementById("dialogTitle").textContent = "Add hours";
   delBtn.classList.add("hidden");
   updatePreview();
@@ -161,6 +164,8 @@ async function openEdit(id) {
   document.getElementById("entryExtraNormal").value=e.extraNormalHours||0;
   document.getElementById("entryOT15").value=e.overtime15Hours||0;
   document.getElementById("entryOT20").value=e.overtime20Hours||0;
+  document.getElementById("entryTravelAll15").checked=e.travelAll15===true;
+  updateTravelModeUI();
   document.getElementById("entryNotes").value=e.notes||"";
   document.getElementById("dialogTitle").textContent="Edit hours";
   delBtn.classList.remove("hidden");
@@ -174,6 +179,7 @@ async function updatePreview() {
   const extraNormalHours = Number(document.getElementById("entryExtraNormal").value||0);
   const overtime15Hours = Number(document.getElementById("entryOT15").value||0);
   const overtime20Hours = Number(document.getElementById("entryOT20").value||0);
+  const travelAll15 = document.getElementById("entryTravelAll15").checked;
   const warning = document.getElementById("splitWarning");
 
   if (!start || !end) {
@@ -186,9 +192,9 @@ async function updatePreview() {
   }
 
   const settings = await getSettings();
-  const tempEntry = {start,end,breakMinutes,extraNormalHours,overtime15Hours,overtime20Hours};
+  const tempEntry = {start,end,breakMinutes,extraNormalHours,overtime15Hours,overtime20Hours,travelAll15};
   const b = entryPayBreakdown(tempEntry, settings);
-  const requested = hoursFieldToMinutes(extraNormalHours)+hoursFieldToMinutes(overtime15Hours)+hoursFieldToMinutes(overtime20Hours);
+  const requested = travelAll15 ? 0 : hoursFieldToMinutes(extraNormalHours)+hoursFieldToMinutes(overtime15Hours)+hoursFieldToMinutes(overtime20Hours);
 
   document.getElementById("previewHours").textContent=fmtMinutes(b.total);
   document.getElementById("previewPay").textContent=fmtMoney(b.gross);
@@ -207,6 +213,24 @@ document.getElementById("prevMonth").onclick=async()=>{shownMonth=new Date(shown
 document.getElementById("nextMonth").onclick=async()=>{shownMonth=new Date(shownMonth.getFullYear(),shownMonth.getMonth()+1,1);selectedDate=localYmd(shownMonth);await renderCalendar();await renderSelectedDay();};
 addHoursBtn.onclick=()=>{clearForm();dlg.showModal();};
 document.getElementById("cancelDialogBtn").onclick=()=>dlg.close();
+function updateTravelModeUI(){
+  const checked = document.getElementById("entryTravelAll15").checked;
+  document.getElementById("manualRateSplit").classList.toggle("disabled-split", checked);
+  ["entryExtraNormal","entryOT15","entryOT20"].forEach(id=>{
+    document.getElementById(id).disabled = checked;
+  });
+  if (checked) {
+    document.getElementById("entryExtraNormal").value = 0;
+    document.getElementById("entryOT15").value = 0;
+    document.getElementById("entryOT20").value = 0;
+  }
+}
+
+document.getElementById("entryTravelAll15").addEventListener("change",()=>{
+  updateTravelModeUI();
+  updatePreview();
+});
+
 ["entryStart","entryEnd","entryBreak","entryExtraNormal","entryOT15","entryOT20"].forEach(id=>document.getElementById(id).addEventListener("input",updatePreview));
 
 form.addEventListener("submit", async e => {
@@ -220,11 +244,12 @@ form.addEventListener("submit", async e => {
     extraNormalHours: Number(document.getElementById("entryExtraNormal").value||0),
     overtime15Hours: Number(document.getElementById("entryOT15").value||0),
     overtime20Hours: Number(document.getElementById("entryOT20").value||0),
+    travelAll15: document.getElementById("entryTravelAll15").checked,
     notes: document.getElementById("entryNotes").value.trim()
   };
 
   const workedMins = entryMinutes(value);
-  const splitMins = hoursFieldToMinutes(value.extraNormalHours)+hoursFieldToMinutes(value.overtime15Hours)+hoursFieldToMinutes(value.overtime20Hours);
+  const splitMins = value.travelAll15 ? 0 : hoursFieldToMinutes(value.extraNormalHours)+hoursFieldToMinutes(value.overtime15Hours)+hoursFieldToMinutes(value.overtime20Hours);
   if (splitMins > workedMins) {
     alert("The extra/overtime hours cannot be greater than the total worked hours.");
     return;

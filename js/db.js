@@ -1,8 +1,9 @@
 const DB_NAME = "WorkHoursDB";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_ENTRIES = "entries";
 const STORE_SETTINGS = "settings";
 const STORE_STATE = "state";
+const STORE_EXPENSES = "taxExpenses";
 
 function openDB() {
   return new Promise((resolve, reject) => {
@@ -15,6 +16,10 @@ function openDB() {
       }
       if (!db.objectStoreNames.contains(STORE_SETTINGS)) db.createObjectStore(STORE_SETTINGS, { keyPath: "key" });
       if (!db.objectStoreNames.contains(STORE_STATE)) db.createObjectStore(STORE_STATE, { keyPath: "key" });
+      if (!db.objectStoreNames.contains(STORE_EXPENSES)) {
+        const expenseStore = db.createObjectStore(STORE_EXPENSES, { keyPath: "id", autoIncrement: true });
+        expenseStore.createIndex("taxYear", "taxYear");
+      }
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
@@ -30,7 +35,7 @@ async function setKV(store,key,value){ const s=await tx(store,"readwrite"); retu
 async function getSettings(){
   const oldOt = Number(await getKV(STORE_SETTINGS,"overtimeMultiplier") ?? 1.5);
   return {
-    hourlyRate: Number(await getKV(STORE_SETTINGS,"hourlyRate") ?? 25),
+    hourlyRate: Number(await getKV(STORE_SETTINGS,"hourlyRate") ?? 38),
     regularHoursPerDay: Number(await getKV(STORE_SETTINGS,"regularHoursPerDay") ?? 8),
     overtime15Multiplier: Number(await getKV(STORE_SETTINGS,"overtime15Multiplier") ?? oldOt),
     overtime20Multiplier: Number(await getKV(STORE_SETTINGS,"overtime20Multiplier") ?? 2.0),
@@ -54,6 +59,16 @@ function hoursFieldToMinutes(v){
 
 function entryPayBreakdown(e, settings){
   const total = entryMinutes(e);
+
+  if (e.travelAll15 === true) {
+    const overtime15Pay = total/60*settings.hourlyRate*settings.overtime15Multiplier;
+    return {
+      total, base:0, extraNormal:0, overtime15:total, overtime20:0,
+      basePay:0, extraNormalPay:0, overtime15Pay, overtime20Pay:0,
+      gross:overtime15Pay
+    };
+  }
+
   const extraNormal = Math.min(total, hoursFieldToMinutes(e.extraNormalHours));
   const remainingAfterExtra = Math.max(0, total-extraNormal);
   const overtime15 = Math.min(remainingAfterExtra, hoursFieldToMinutes(e.overtime15Hours));
@@ -69,10 +84,28 @@ function entryPayBreakdown(e, settings){
   return {
     total, base, extraNormal, overtime15, overtime20,
     basePay, extraNormalPay, overtime15Pay, overtime20Pay,
-    gross: basePay+extraNormalPay+overtime15Pay+overtime20Pay
+    gross:basePay+extraNormalPay+overtime15Pay+overtime20Pay
   };
 }
 function fmtMinutes(mins){ mins=Math.max(0,Math.round(mins)); return `${Math.floor(mins/60)}h ${String(mins%60).padStart(2,"0")}m`; }
 function fmtMoney(v){ return new Intl.NumberFormat("en-AU",{style:"currency",currency:"AUD"}).format(v||0); }
 function ymd(d=new Date()){ return d.toISOString().slice(0,10); }
 function monthKey(d=new Date()){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; }
+
+
+async function getAllTaxExpenses(){
+  const s=await tx(STORE_EXPENSES);
+  return new Promise((res,rej)=>{const r=s.getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+}
+async function addTaxExpense(v){
+  const s=await tx(STORE_EXPENSES,"readwrite");
+  return new Promise((res,rej)=>{const r=s.add(v);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+}
+async function updateTaxExpense(v){
+  const s=await tx(STORE_EXPENSES,"readwrite");
+  return new Promise((res,rej)=>{const r=s.put(v);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+}
+async function deleteTaxExpense(id){
+  const s=await tx(STORE_EXPENSES,"readwrite");
+  return new Promise((res,rej)=>{const r=s.delete(Number(id));r.onsuccess=()=>res();r.onerror=()=>rej(r.error)});
+}

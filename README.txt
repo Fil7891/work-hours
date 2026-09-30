@@ -83,3 +83,22 @@ VERSION 7
 - The selected month persists when moving between pages or reopening the app.
 - Daily dollar amounts were removed from calendar cells.
 - Salary calculations remain unchanged and are still shown on the Salary page.
+
+
+VERSION 8 - TRAVEL DAY ALL AT 1.5X
+- Added a Travel day checkbox to work entries.
+- When enabled, all worked time after the break is paid at the 1.5x rate.
+- Manual 1.0x / 1.5x / 2.0x split fields are disabled for that entry.
+- Existing entries remain unchanged.
+
+
+VERSION 9 - TAX YEAR PAGE
+- Adds a separate Tax Year page without changing the existing V8 work-entry, salary, timesheet or settings calculations.
+- Supports 2024/25, 2025/26 and 2026/27 Australian resident individual tax-rate estimates.
+- Summarises work income from entries dated 1 July to 30 June.
+- Allows other taxable income and actual PAYG withheld to be entered for each tax year.
+- If actual PAYG is blank, the page estimates PAYG using the app's existing monthly PAYG table.
+- Adds editable tax-year expenses with date, category, description and deductible amount.
+- Calculates estimated taxable income, income tax, LITO, optional simple 2% Medicare levy, and estimated refund/amount payable.
+- Tax expenses are stored locally in IndexedDB on the device.
+- Tax result is an estimate only and does not cover every tax circumstance.

@@ -40,6 +40,10 @@
         <label>Finish<input type="time" id="entryEnd" required></label>
       </div>
       <label>Break minutes<input type="number" id="entryBreak" min="0" step="1" value="30"></label>
+      <label class="travel-rate-toggle">
+        <input type="checkbox" id="entryTravelAll15">
+        <span><strong>Travel day</strong><small>Pay all worked hours at 1.5×</small></span>
+      </label>
       <label>Extra hours — normal rate (1.0×)<input type="number" id="entryExtraNormal" min="0" step="0.25" value="0"></label>
       <label>Overtime hours — 1.5×<input type="number" id="entryOT15" min="0" step="0.25" value="0"></label>
       <label>Overtime hours — 2.0×<input type="number" id="entryOT20" min="0" step="0.25" value="0"></label>
@@ -57,6 +61,7 @@
     <a href="index.html">Calendar</a>
     <a href="timesheets.html" class="active">Timesheets</a>
     <a href="salary.html">Salary</a>
+    <a href="tax-year.html">Tax Year</a>
     <a href="settings.html">Settings</a>
   </nav>
 </main>
