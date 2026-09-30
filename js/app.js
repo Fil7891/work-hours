@@ -120,7 +120,7 @@ async function renderSelectedDay() {
   selectedEntries.innerHTML = entries.map(e=>`
     <button class="selected-entry" data-id="${e.id}">
       <div>
-        <strong>${e.start} – ${e.end}</strong>
+        <strong>${entryPeriodsText(e)}</strong>
         <span>Break ${e.breakMinutes||0}m${rateSplitText(e)}${e.notes ? ` · ${escapeHtml(e.notes)}` : ""}</span>
       </div>
       <strong>${fmtMinutes(entryMinutes(e))}</strong>
@@ -139,8 +139,44 @@ function rateSplitText(e) {
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 }
+
+function getWorkPeriodsFromForm(){
+  return [...document.querySelectorAll("#workPeriods .work-period-row")]
+    .map(row=>({
+      start: row.querySelector(".period-start").value,
+      end: row.querySelector(".period-end").value
+    }))
+    .filter(p=>p.start || p.end);
+}
+
+function createWorkPeriodRow(start="", end="", removable=true){
+  const row=document.createElement("div");
+  row.className="work-period-row";
+  row.innerHTML=`
+    <label>Start time<input type="time" class="period-start" value="${escapeHtml(start)}" required></label>
+    <label>Finish time<input type="time" class="period-end" value="${escapeHtml(end)}" required></label>
+    ${removable ? '<button type="button" class="remove-period-btn ghost" aria-label="Remove work period">Remove</button>' : ""}
+  `;
+  row.querySelectorAll("input").forEach(input=>input.addEventListener("input",updatePreview));
+  const remove=row.querySelector(".remove-period-btn");
+  if(remove) remove.addEventListener("click",()=>{row.remove();updatePreview();});
+  return row;
+}
+
+function setWorkPeriods(periods){
+  const container=document.getElementById("workPeriods");
+  container.innerHTML="";
+  const list=(Array.isArray(periods)&&periods.length)?periods:[{start:"",end:""}];
+  list.forEach((p,i)=>container.appendChild(createWorkPeriodRow(p.start||"",p.end||"",i>0)));
+}
+
+function addWorkPeriod(){
+  document.getElementById("workPeriods").appendChild(createWorkPeriodRow("","",true));
+}
+
 function clearForm() {
   form.reset();
+  setWorkPeriods([{start:"",end:""}]);
   document.getElementById("entryId").value = "";
   document.getElementById("entryDate").value = selectedDate;
   document.getElementById("entryBreak").value = 30;
@@ -158,8 +194,7 @@ async function openEdit(id) {
   if (!e) return;
   document.getElementById("entryId").value=e.id;
   document.getElementById("entryDate").value=e.date;
-  document.getElementById("entryStart").value=e.start;
-  document.getElementById("entryEnd").value=e.end;
+  setWorkPeriods(entryPeriods(e));
   document.getElementById("entryBreak").value=e.breakMinutes||0;
   document.getElementById("entryExtraNormal").value=e.extraNormalHours||0;
   document.getElementById("entryOT15").value=e.overtime15Hours||0;
@@ -173,8 +208,7 @@ async function openEdit(id) {
   dlg.showModal();
 }
 async function updatePreview() {
-  const start = document.getElementById("entryStart").value;
-  const end = document.getElementById("entryEnd").value;
+  const periods = getWorkPeriodsFromForm();
   const breakMinutes = Number(document.getElementById("entryBreak").value||0);
   const extraNormalHours = Number(document.getElementById("entryExtraNormal").value||0);
   const overtime15Hours = Number(document.getElementById("entryOT15").value||0);
@@ -182,7 +216,7 @@ async function updatePreview() {
   const travelAll15 = document.getElementById("entryTravelAll15").checked;
   const warning = document.getElementById("splitWarning");
 
-  if (!start || !end) {
+  if (!periods.length || periods.some(p=>!p.start || !p.end)) {
     document.getElementById("previewHours").textContent="0h 00m";
     document.getElementById("previewPay").textContent="$0.00";
     document.getElementById("previewExtraNormal").textContent="0h 00m";
@@ -192,7 +226,12 @@ async function updatePreview() {
   }
 
   const settings = await getSettings();
-  const tempEntry = {start,end,breakMinutes,extraNormalHours,overtime15Hours,overtime20Hours,travelAll15};
+  const tempEntry = {
+    start: periods[0]?.start || "",
+    end: periods[periods.length-1]?.end || "",
+    periods,
+    breakMinutes,extraNormalHours,overtime15Hours,overtime20Hours,travelAll15
+  };
   const b = entryPayBreakdown(tempEntry, settings);
   const requested = travelAll15 ? 0 : hoursFieldToMinutes(extraNormalHours)+hoursFieldToMinutes(overtime15Hours)+hoursFieldToMinutes(overtime20Hours);
 
@@ -231,15 +270,27 @@ document.getElementById("entryTravelAll15").addEventListener("change",()=>{
   updatePreview();
 });
 
-["entryStart","entryEnd","entryBreak","entryExtraNormal","entryOT15","entryOT20"].forEach(id=>document.getElementById(id).addEventListener("input",updatePreview));
+document.getElementById("addWorkPeriodBtn").addEventListener("click",()=>{
+  addWorkPeriod();
+});
+
+["entryBreak","entryExtraNormal","entryOT15","entryOT20"].forEach(id=>document.getElementById(id).addEventListener("input",updatePreview));
+document.querySelectorAll("#workPeriods input").forEach(input=>input.addEventListener("input",updatePreview));
 
 form.addEventListener("submit", async e => {
   e.preventDefault();
   const id = Number(document.getElementById("entryId").value)||null;
+  const periods = getWorkPeriodsFromForm();
+  if (!periods.length || periods.some(p=>!p.start || !p.end)) {
+    alert("Enter a start and finish time for every work period.");
+    return;
+  }
+
   const value = {
     date: document.getElementById("entryDate").value,
-    start: document.getElementById("entryStart").value,
-    end: document.getElementById("entryEnd").value,
+    start: periods[0].start,
+    end: periods[periods.length-1].end,
+    periods,
     breakMinutes: Number(document.getElementById("entryBreak").value||0),
     extraNormalHours: Number(document.getElementById("entryExtraNormal").value||0),
     overtime15Hours: Number(document.getElementById("entryOT15").value||0),

@@ -51,7 +51,23 @@ function minutesBetween(start,end){
   if(mins<0) mins+=24*60;
   return mins;
 }
-function entryMinutes(e){ return Math.max(0, minutesBetween(e.start,e.end)-Number(e.breakMinutes||0)); }
+function entryPeriods(e){
+  if (Array.isArray(e.periods) && e.periods.length) {
+    return e.periods
+      .filter(p=>p && p.start && p.end)
+      .map(p=>({start:p.start,end:p.end}));
+  }
+  return (e.start && e.end) ? [{start:e.start,end:e.end}] : [];
+}
+
+function entryMinutes(e){
+  const worked = entryPeriods(e).reduce((sum,p)=>sum+minutesBetween(p.start,p.end),0);
+  return Math.max(0, worked-Number(e.breakMinutes||0));
+}
+
+function entryPeriodsText(e){
+  return entryPeriods(e).map(p=>`${p.start} – ${p.end}`).join(" / ");
+}
 
 function hoursFieldToMinutes(v){
   return Math.max(0, Math.round((Number(v)||0)*60));

@@ -35,9 +35,18 @@
       <h2 id="dialogTitle">Add entry</h2>
       <input type="hidden" id="entryId">
       <label>Date<input type="date" id="entryDate" required></label>
-      <div class="two-col">
-        <label>Start<input type="time" id="entryStart" required></label>
-        <label>Finish<input type="time" id="entryEnd" required></label>
+      <div class="work-periods-box">
+        <div class="work-periods-head">
+          <strong>Work periods</strong>
+          <button type="button" id="addWorkPeriodBtn" class="secondary small-btn">+ Add work period</button>
+        </div>
+        <p class="small muted">Use another period if you leave work and come back later.</p>
+        <div id="workPeriods">
+          <div class="work-period-row">
+            <label>Start<input type="time" class="period-start" id="entryStart" required></label>
+            <label>Finish<input type="time" class="period-end" id="entryEnd" required></label>
+          </div>
+        </div>
       </div>
       <label>Break minutes<input type="number" id="entryBreak" min="0" step="1" value="30"></label>
       <label class="travel-rate-toggle">

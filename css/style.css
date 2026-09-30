@@ -24,3 +24,14 @@
 .disabled-split{opacity:.55}
 
 .expense-list{display:grid;gap:8px;margin-bottom:10px}.expense-item{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;border:1px solid #e5e7eb;background:#fff;border-radius:12px;padding:12px;cursor:pointer;color:#111827}.expense-item div{display:grid;gap:3px}.expense-item span{font-size:11px;color:#6b7280}.tax-input-row{margin:12px 0}.tax-check{display:flex;grid-template-columns:20px 1fr;align-items:center;gap:10px;padding:12px 0}.tax-check input{width:20px;height:20px}.amount-payable strong{color:#991b1b}.amount-payable span{color:#991b1b}.bottom-nav a{font-size:11px;padding-left:2px;padding-right:2px}
+
+.work-periods-box{display:grid;gap:10px;padding:12px;border:1px solid #d1d5db;border-radius:12px;background:#f9fafb}
+.work-periods-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.work-period-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:10px;align-items:end}
+.work-period-row label{min-width:0}
+.remove-period-btn{min-height:42px}
+.small-btn{padding:8px 10px}
+@media (max-width:520px){
+  .work-period-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .work-period-row .remove-period-btn{grid-column:1 / -1}
+}

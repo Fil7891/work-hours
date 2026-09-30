@@ -102,3 +102,14 @@ VERSION 9 - TAX YEAR PAGE
 - Calculates estimated taxable income, income tax, LITO, optional simple 2% Medicare levy, and estimated refund/amount payable.
 - Tax expenses are stored locally in IndexedDB on the device.
 - Tax result is an estimate only and does not cover every tax circumstance.
+
+
+VERSION 10 - MULTIPLE WORK PERIODS
+- Based directly on Version 9.
+- Added multiple work periods inside one daily entry.
+- Example: 07:00-10:00 and 13:30-17:00 are added together as worked time.
+- Break minutes are still deducted once from the total worked time.
+- Existing single-period entries remain compatible.
+- All existing pay-rate, travel-day, salary, tax-year, timesheet and settings functions remain in place.
+- New unsaved-user default hourly rate changed from $38.00 to $26.44.
+- An already saved hourly rate is NOT overwritten.
