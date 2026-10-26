@@ -124,3 +124,29 @@ VERSION 11 - CSV IMPORT
 - Imported entries are added; existing records are not deleted.
 - Invalid rows are skipped and reported.
 - Imported CSV rows create a single work period from Start to Finish.
+
+
+VERSION 12 - FLEXIBLE CSV IMPORT
+- Based directly on Version 11.
+- CSV importer now accepts dates in:
+  YYYY-MM-DD
+  D/M/YYYY
+  DD/MM/YYYY
+  D-M-YYYY
+- CSV importer now accepts times in:
+  HH:MM
+  H:MM
+  HH:MM:SS
+  H:MM AM/PM
+- Imported values are normalized back to the app's internal YYYY-MM-DD and HH:MM format.
+- This fixes CSV files opened/edited/saved by Excel or mobile spreadsheet apps that reformat dates and times.
+- All other Version 11 functionality remains unchanged.
+
+VERSION 13 VISUAL REFRESH
+- New professional Work Hours app icon
+- Updated blue/cyan visual identity
+- Cleaner card hierarchy, typography, forms and dialogs
+- Redesigned mobile calendar and summary blocks
+- Floating icon-based bottom navigation
+- No database schema or calculation logic changes
+- Service worker cache bumped to work-hours-v13
