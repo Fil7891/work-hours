@@ -5,18 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b4fb3">
   <title>Timesheets</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
-  <link rel="stylesheet" href="css/style.css?v=13">
+  <link rel="manifest" href="manifest.json?v=14">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/work-hours-v14-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/work-hours-v14-180.png">
+  <link rel="stylesheet" href="css/style.css?v=14">
 </head>
 <body>
 <header class="topbar">
-  <div><div class="eyebrow">Work history</div><h1>Timesheets</h1></div>
+  <div><div class="eyebrow">Hours & work history</div><h1>Reports</h1></div>
   <button id="addEntryBtn" class="ghost">+ Add</button>
 </header>
 
 <main class="container">
+  <nav class="view-tabs" aria-label="Primary views">
+    <a href="index.html" class="">Calendar</a>
+    <a href="salary.html" class="">Summary</a>
+    <a href="timesheets.html" class="active">Reports</a>
+  </nav>
   <section class="card filters">
     <label>Month
       <input type="month" id="monthFilter">
@@ -24,6 +29,20 @@
     <button id="importCsvBtn" type="button" class="secondary">Import CSV</button>
       <input type="file" id="importCsvFile" accept=".csv,text/csv" hidden>
       <button id="exportCsvBtn" class="secondary">Export CSV</button>
+  </section>
+
+  <section class="report-kpis">
+    <div><span>Total hours</span><strong id="reportTotalHours">0h 00m</strong></div>
+    <div><span>Regular</span><strong id="reportRegularHours">0h 00m</strong></div>
+    <div><span>Overtime</span><strong id="reportOvertimeHours">0h 00m</strong></div>
+  </section>
+
+  <section class="card visual-card">
+    <div class="section-head"><div><h2>Hours by day</h2><p class="small muted">Regular and overtime hours for the selected month.</p></div><strong id="chartMonthHours">0h 00m</strong></div>
+    <div class="hours-chart-wrap">
+      <div id="hoursChart" class="hours-chart" aria-label="Hours by day chart"></div>
+      <div class="chart-legend"><span><i class="legend-dot regular"></i>Regular</span><span><i class="legend-dot ot15"></i>OT 1.5×</span><span><i class="legend-dot ot20"></i>OT 2.0×</span></div>
+    </div>
   </section>
 
   <section class="card">
@@ -70,16 +89,16 @@
     </form>
   </dialog>
 
-  <nav class="bottom-nav">
-    <a href="index.html">Calendar</a>
-    <a href="timesheets.html" class="active">Timesheets</a>
-    <a href="salary.html">Salary</a>
-    <a href="tax-year.html">Tax Year</a>
-    <a href="settings.html">Settings</a>
+  <nav class="bottom-nav app-bottom-nav">
+    <a href="index.html" class=""><span class="nav-glyph">⌂</span><span>Home</span></a>
+    <a href="salary.html" class=""><span class="nav-glyph">▥</span><span>Summary</span></a>
+    <a href="timesheets.html" class="active"><span class="nav-glyph">▤</span><span>Reports</span></a>
+    <a href="tax-year.html" class=""><span class="nav-glyph">◔</span><span>Tax</span></a>
+    <a href="settings.html" class=""><span class="nav-glyph">⚙</span><span>Settings</span></a>
   </nav>
 </main>
 
-<script src="js/db.js"></script>
-<script src="js/timesheets.js"></script>
+<script src="js/db.js?v=14"></script>
+<script src="js/timesheets.js?v=14"></script>
 </body>
 </html>

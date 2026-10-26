@@ -150,3 +150,26 @@ VERSION 13 VISUAL REFRESH
 - Floating icon-based bottom navigation
 - No database schema or calculation logic changes
 - Service worker cache bumped to work-hours-v13
+
+VERSION 14 VISUAL UPDATE
+------------------------
+- New Work Hours V14 icon filenames for Android/iPhone launcher refresh.
+- New white/blue professional app shell based on the approved visual reference.
+- Calendar / Summary / Reports segmented navigation.
+- Calendar monthly KPI cards: recorded hours, work days, estimated gross.
+- Summary gradient net-pay hero.
+- Summary Income vs Deductions chart using real pay-cycle data.
+- Summary pay-period hours breakdown.
+- Reports monthly KPI cards.
+- Reports stacked daily-hours chart for regular, 1.5x and 2.0x hours.
+- Cleaner fixed bottom navigation.
+- No IndexedDB schema or backup/restore format changes.
+- Service worker cache updated to work-hours-v14 and uses network-first for app code.
+
+ICON REFRESH
+------------
+The manifest now uses new filenames:
+- icons/work-hours-v14-192.png
+- icons/work-hours-v14-512.png
+and iPhone uses icons/work-hours-v14-180.png.
+This prevents the old icon URL from being reused from cache. Android launchers can still retain an installed icon; if it does not refresh after the V14 deployment, remove the installed PWA (do not clear Chrome site data) and install it again.

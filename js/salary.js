@@ -69,6 +69,36 @@ function calculatePayForEntries(entries, s){
   return totals;
 }
 
+
+function renderMoneyChart(values){
+  const el=document.getElementById("incomeDeductionChart");
+  if(!el) return;
+  const items=[
+    {label:"Gross pay",value:values.gross,kind:"gross"},
+    {label:"PAYG",value:values.tax,kind:"tax"},
+    {label:"Deductions",value:values.deductions,kind:"deduction"},
+    {label:"Net pay",value:values.net,kind:"net"}
+  ];
+  const max=Math.max(1,...items.map(x=>x.value));
+  el.innerHTML=items.map(x=>{
+    const h=Math.max(8,Math.round((x.value/max)*150));
+    return `<div class="money-bar-item"><div class="money-bar-value">${fmtMoney(x.value)}</div><div class="money-bar-track"><div class="money-bar ${x.kind}" style="height:${h}px"></div></div><div class="money-bar-label">${x.label}</div></div>`;
+  }).join("");
+}
+
+function renderHoursBreakdown(pay){
+  const el=document.getElementById("payHoursBreakdown");
+  if(!el) return;
+  const items=[
+    ["Total hours",pay.total,"total"],
+    ["Regular hours",pay.base,"regular"],
+    ["Extra @ 1.0×",pay.extraNormal,"extra"],
+    ["Overtime @ 1.5×",pay.overtime15,"ot15"],
+    ["Overtime @ 2.0×",pay.overtime20,"ot20"]
+  ];
+  el.innerHTML=items.map(([label,mins,kind])=>`<div class="breakdown-row"><span class="breakdown-icon ${kind}"></span><span>${label}</span><strong>${fmtMinutes(mins)}</strong></div>`).join("");
+}
+
 async function render(){
   const s=await getSettings();
   const allEntries=await getAllEntries();
@@ -128,6 +158,15 @@ async function render(){
   document.getElementById("taxMethod").textContent=s.claimsTaxFreeThreshold
     ?"With tax-free threshold"
     :"No tax-free threshold";
+
+  const heroNetPay=document.getElementById("heroNetPay");
+  const heroTotalHours=document.getElementById("heroTotalHours");
+  const heroPayPeriod=document.getElementById("heroPayPeriod");
+  if(heroNetPay) heroNetPay.textContent=fmtMoney(net);
+  if(heroTotalHours) heroTotalHours.textContent=fmtMinutes(pay.total);
+  if(heroPayPeriod) heroPayPeriod.textContent=`${monthLabel} · ${cycle.weeks}-week cycle`;
+  renderMoneyChart({gross:pay.gross,tax,deductions:s.otherDeductions,net});
+  renderHoursBreakdown(pay);
 }
 
 salaryMonth.onchange=()=>{

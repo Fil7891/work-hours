@@ -60,6 +60,16 @@ async function renderCalendar() {
   const monthMinutes = monthEntries.reduce((a,e)=>a+entryMinutes(e),0);
   monthSummary.textContent = `${fmtMinutes(monthMinutes)} recorded`;
 
+  const overviewHours=document.getElementById("overviewHours");
+  const overviewDays=document.getElementById("overviewDays");
+  const overviewGross=document.getElementById("overviewGross");
+  if(overviewHours) overviewHours.textContent=fmtMinutes(monthMinutes);
+  if(overviewDays) overviewDays.textContent=String(new Set(monthEntries.map(e=>e.date)).size);
+  if(overviewGross){
+    const gross=monthEntries.reduce((sum,e)=>sum+entryPayBreakdown(e,settings).gross,0);
+    overviewGross.textContent=fmtMoney(gross);
+  }
+
   const first = new Date(year, month, 1);
   const startOffset = (first.getDay() + 6) % 7; // Monday = 0
   const daysInMonth = new Date(year, month+1, 0).getDate();

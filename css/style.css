@@ -73,7 +73,7 @@ button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
   height:46px;
   transform:translateY(-50%);
   border-radius:14px;
-  background:url("../icons/icon-192.png") center/cover no-repeat;
+  background:url("../icons/work-hours-v14-192.png") center/cover no-repeat;
   box-shadow:0 8px 18px rgba(0,22,59,.28), inset 0 0 0 1px rgba(255,255,255,.2);
 }
 .topbar h1{
@@ -523,4 +523,373 @@ dialog::backdrop{background:rgba(5,25,48,.56);backdrop-filter:blur(3px)}
   .calendar-header{grid-template-columns:42px 1fr 42px}
   .bottom-nav a{font-size:8.5px}
   .bottom-nav a::before{width:19px;height:19px}
+}
+
+/* ========================================================================== */
+/* V14 — Work Hours visual system                                             */
+/* Reference direction: clean white mobile UI, bright blue/cyan accents,      */
+/* compact cards, segmented tabs, dashboard charts and bottom app navigation. */
+/* ========================================================================== */
+
+:root{
+  --v14-blue:#0867f2;
+  --v14-blue2:#0da3f5;
+  --v14-cyan:#21d7cf;
+  --v14-navy:#071a3a;
+  --v14-soft:#f4f8fd;
+  --v14-card:#ffffff;
+  --v14-green:#0fc789;
+  --v14-red:#ff4961;
+  --v14-orange:#ff9f1a;
+  --v14-purple:#7657ef;
+  --v14-shadow:0 8px 26px rgba(35,76,123,.08);
+}
+
+html{background:#f4f8fd}
+body{
+  background:#f4f8fd;
+  color:var(--v14-navy);
+  padding-bottom:96px;
+}
+
+/* Bright app header */
+.topbar{
+  position:relative;
+  top:auto;
+  min-height:78px;
+  padding:14px max(18px,env(safe-area-inset-left));
+  color:var(--v14-navy);
+  background:#fff;
+  box-shadow:none;
+  border-bottom:1px solid #e8eef6;
+}
+.topbar>div:first-child{padding-left:52px}
+.topbar>div:first-child::before{
+  width:40px;
+  height:40px;
+  border-radius:11px;
+  background-image:url("../icons/work-hours-v14-192.png");
+  box-shadow:0 6px 14px rgba(8,103,242,.18);
+}
+.topbar h1{font-size:22px;font-weight:850;color:var(--v14-navy);letter-spacing:-.03em}
+.topbar .eyebrow{font-size:10px;color:#8190a6;font-weight:700}
+.topbar .ghost{
+  color:var(--v14-blue);
+  background:#f1f7ff;
+  border:1px solid #dcecff;
+  backdrop-filter:none;
+}
+
+.container{max-width:860px;padding:12px 14px 28px}
+
+/* Segmented primary navigation */
+.view-tabs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+  padding:4px;
+  margin:0 0 12px;
+  background:#eaf1f8;
+  border-radius:15px;
+}
+.view-tabs a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:38px;
+  border-radius:12px;
+  color:#62738c;
+  text-decoration:none;
+  font-size:12px;
+  font-weight:760;
+  transition:160ms ease;
+}
+.view-tabs a.active{
+  color:#fff;
+  background:linear-gradient(135deg,var(--v14-blue),#087fee);
+  box-shadow:0 6px 14px rgba(8,103,242,.20);
+}
+
+.card{
+  border:1px solid #e7edf5;
+  border-radius:20px;
+  padding:17px;
+  box-shadow:var(--v14-shadow);
+  background:#fff;
+}
+.card::after{display:none}
+.section-head h2,.card h2{font-size:16px;font-weight:840}
+
+/* Calendar overview KPIs */
+.calendar-overview,.report-kpis{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-bottom:12px;
+}
+.calendar-overview>div,.report-kpis>div{
+  min-width:0;
+  padding:13px 12px;
+  background:#fff;
+  border:1px solid #e7edf5;
+  border-radius:17px;
+  box-shadow:0 5px 18px rgba(35,76,123,.06);
+}
+.calendar-overview span,.report-kpis span{display:block;font-size:10px;color:#7d8ca1;font-weight:720}
+.calendar-overview strong,.report-kpis strong{display:block;margin-top:5px;font-size:18px;letter-spacing:-.04em;color:var(--v14-navy)}
+.calendar-overview small{display:block;margin-top:3px;font-size:9px;color:#9aa7b9}
+
+.calendar-card{padding:14px}
+.calendar-header{margin-bottom:12px}
+.calendar-header h2{font-size:17px}
+.calendar-nav{
+  width:40px;height:40px;min-height:40px;
+  border:0;background:#f5f8fc;color:var(--v14-navy);font-size:24px
+}
+.calendar-weekdays span{font-size:9px;text-transform:none;color:#7e8da2;letter-spacing:0}
+.calendar-grid{gap:3px}
+.calendar-day{
+  min-height:58px;
+  border:0;
+  border-radius:13px;
+  background:transparent;
+  padding:6px 2px;
+}
+.calendar-day.worked{background:transparent;border:0}
+.calendar-day.selected{
+  background:var(--v14-blue);
+  color:#fff;
+  box-shadow:0 7px 15px rgba(8,103,242,.24);
+}
+.calendar-day.selected .day-hours{color:#fff}
+.calendar-day.today:not(.selected) .day-number{
+  background:#e8f3ff;
+  color:var(--v14-blue);
+  box-shadow:none;
+}
+.day-number{font-size:12px}
+.day-hours{font-size:8px;color:#0baf7a;margin-top:2px}
+.day-empty{font-size:0;margin-top:2px;width:5px;height:5px;border-radius:999px;background:#dfe7f0}
+.calendar-day.worked .day-empty{background:#14b987}
+
+.selected-day-card{padding:16px}
+.selected-day-card .section-head{align-items:flex-start}
+.selected-day-card #selectedDateTitle{font-size:16px}
+.day-summary{
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin:12px 0;
+}
+.day-summary div,.entry-preview div,.stats div{
+  padding:11px;
+  border:1px solid #edf1f6;
+  background:#f8fafc;
+  border-radius:14px;
+}
+.day-summary span,.entry-preview span,.stats span{font-size:9px;color:#8492a6}
+.day-summary strong,.entry-preview strong,.stats strong{font-size:13px;color:var(--v14-navy)}
+.selected-entry{
+  border:1px solid #e9eff6;
+  border-radius:15px;
+  background:#fff;
+  box-shadow:none;
+}
+
+/* Gradient Summary hero */
+.pay-hero-card{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:15px;
+  min-height:145px;
+  padding:22px;
+  margin-bottom:12px;
+  border-radius:21px;
+  overflow:hidden;
+  color:#fff;
+  background:
+    radial-gradient(circle at 88% 25%,rgba(76,245,183,.72),transparent 34%),
+    radial-gradient(circle at 70% 100%,rgba(16,215,204,.58),transparent 44%),
+    linear-gradient(135deg,#0667f4 0%,#008bdc 55%,#09a6b1 100%);
+  box-shadow:0 12px 28px rgba(8,103,242,.22);
+}
+.pay-hero-copy span{display:block;font-size:12px;font-weight:720;opacity:.92}
+.pay-hero-copy strong{display:block;margin:6px 0;font-size:34px;letter-spacing:-.045em;line-height:1}
+.pay-hero-copy small{font-size:10px;opacity:.78}
+.hero-pill{
+  flex:0 0 auto;
+  padding:10px 12px;
+  border-radius:14px;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(8px);
+}
+.hero-pill span{display:block;font-size:9px;opacity:.78}
+.hero-pill strong{display:block;margin-top:3px;font-size:13px}
+
+.filters{padding:12px 14px;border-radius:16px}
+.pay-cycle-card{padding:14px 16px}
+.cycle-range{font-size:13px}
+
+/* Money bar chart */
+.visual-card{overflow:visible}
+.money-chart{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-around;
+  gap:10px;
+  min-height:215px;
+  padding:10px 4px 0;
+}
+.money-bar-item{flex:1;min-width:0;text-align:center}
+.money-bar-value{min-height:30px;font-size:10px;font-weight:800;color:var(--v14-navy);display:flex;align-items:flex-end;justify-content:center}
+.money-bar-track{height:152px;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid #dfe8f1}
+.money-bar{width:min(42px,78%);border-radius:8px 8px 3px 3px;box-shadow:inset 0 1px 0 rgba(255,255,255,.28)}
+.money-bar.gross{background:linear-gradient(180deg,#12a9ff,#0867f2)}
+.money-bar.tax{background:linear-gradient(180deg,#ff6376,#ff334f)}
+.money-bar.deduction{background:linear-gradient(180deg,#8a6df7,#6542e8)}
+.money-bar.net{background:linear-gradient(180deg,#18d89b,#0eaf78)}
+.money-bar-label{margin-top:7px;font-size:9px;color:#718198;font-weight:720}
+
+.breakdown-list{display:grid;gap:0}
+.breakdown-row{
+  display:grid;
+  grid-template-columns:30px 1fr auto;
+  gap:9px;
+  align-items:center;
+  min-height:44px;
+  border-bottom:1px solid #edf1f6;
+  font-size:12px;
+}
+.breakdown-row:last-child{border-bottom:0}
+.breakdown-row strong{font-size:12px}
+.breakdown-icon{width:26px;height:26px;border-radius:9px;background:#eef4fb;position:relative}
+.breakdown-icon::after{content:"";position:absolute;inset:7px;border-radius:4px;background:currentColor}
+.breakdown-icon.total{color:var(--v14-blue);background:#e8f3ff}
+.breakdown-icon.regular{color:#0b9ef2;background:#e7f6ff}
+.breakdown-icon.extra{color:#21c7d8;background:#e6fbfd}
+.breakdown-icon.ot15{color:var(--v14-orange);background:#fff4df}
+.breakdown-icon.ot20{color:var(--v14-red);background:#ffecef}
+
+/* Reports */
+.report-kpis strong{font-size:17px}
+.hours-chart-wrap{overflow:hidden}
+.hours-chart{
+  height:190px;
+  display:flex;
+  align-items:flex-end;
+  gap:5px;
+  padding:12px 2px 0;
+  border-bottom:1px solid #dfe7f1;
+  background:repeating-linear-gradient(to top,transparent 0,transparent 37px,#eef3f8 38px);
+}
+.day-chart-column{
+  flex:1 1 0;
+  min-width:10px;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  gap:4px;
+}
+.stacked-bar{height:154px;width:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.segment{display:block;width:min(15px,82%);min-height:0}
+.segment.regular{background:linear-gradient(180deg,#12a9ff,#0867f2)}
+.segment.ot15{background:var(--v14-orange)}
+.segment.ot20{background:var(--v14-red);border-radius:4px 4px 0 0}
+.day-chart-column small{font-size:8px;color:#8291a5}
+.chart-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:9px;color:#607087}
+.chart-legend span{display:flex;align-items:center;gap:5px}
+.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.legend-dot.regular{background:var(--v14-blue)}
+.legend-dot.ot15{background:var(--v14-orange)}
+.legend-dot.ot20{background:var(--v14-red)}
+.chart-empty{width:100%;align-self:center}
+
+.entry-item{
+  border:0;
+  border-bottom:1px solid #edf1f6;
+  border-radius:0;
+  padding:11px 2px;
+  box-shadow:none;
+}
+.entry-item:last-child{border-bottom:0}
+.entry-main strong{font-size:12px}
+.entry-main span{font-size:10px}
+.entry-hours{font-size:12px;color:var(--v14-navy)}
+
+/* Salary detail card is supporting detail, not the visual focal point */
+.salary-card .salary-row{min-height:40px}
+.salary-row.total,.salary-row.net{border-radius:12px;padding-left:10px;padding-right:10px}
+.salary-row.net{background:#ecfbf5}
+.salary-row.total{background:#eef6ff}
+
+/* Bottom navigation */
+.app-bottom-nav,.bottom-nav{
+  position:fixed;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(900px,100%);
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:0;
+  padding:7px max(6px,env(safe-area-inset-left)) calc(7px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.97);
+  border-top:1px solid #e6edf5;
+  border-radius:0;
+  box-shadow:0 -5px 20px rgba(22,56,96,.06);
+  z-index:100;
+  backdrop-filter:blur(18px);
+}
+.app-bottom-nav a,.bottom-nav a{
+  min-height:52px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  padding:3px 2px;
+  color:#7d8ea4;
+  text-decoration:none;
+  border-radius:10px;
+  font-size:8px;
+  font-weight:720;
+  background:transparent;
+}
+.app-bottom-nav a.active,.bottom-nav a.active{color:var(--v14-blue);background:transparent}
+.nav-glyph{font-size:19px;line-height:1;font-weight:600}
+
+/* Settings / tax pages inherit V14 shell */
+.form-card,.tax-note,.info-box,.super-box{border-radius:16px}
+
+@media(max-width:620px){
+  body{padding-bottom:84px}
+  .container{padding:10px 10px 22px}
+  .topbar{min-height:70px;padding:12px 14px}
+  .topbar h1{font-size:19px}
+  .topbar>div:first-child{padding-left:46px}
+  .topbar>div:first-child::before{width:36px;height:36px}
+  .card{padding:14px;border-radius:18px;margin-bottom:10px}
+  .calendar-overview,.report-kpis{gap:6px}
+  .calendar-overview>div,.report-kpis>div{padding:10px 8px;border-radius:14px}
+  .calendar-overview strong,.report-kpis strong{font-size:14px}
+  .calendar-overview small{display:none}
+  .day-summary{grid-template-columns:repeat(2,1fr)}
+  .pay-hero-card{min-height:132px;padding:18px}
+  .pay-hero-copy strong{font-size:29px}
+  .money-chart{gap:4px}
+  .money-bar-value{font-size:8px}
+  .money-bar-label{font-size:8px}
+  .hours-chart{gap:2px}
+  .segment{width:min(10px,88%)}
+  .day-chart-column small{font-size:7px}
+}
+
+@media(max-width:380px){
+  .calendar-overview,.report-kpis{grid-template-columns:1fr 1fr}
+  .calendar-overview>div:last-child,.report-kpis>div:last-child{grid-column:1/-1}
+  .pay-hero-card{display:block}
+  .hero-pill{display:inline-block;margin-top:14px}
 }

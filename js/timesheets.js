@@ -29,9 +29,46 @@ document.getElementById("addWorkPeriodBtn").onclick=()=>{
 };
 
 
+
+function renderHoursReport(entries,settings){
+  const reportTotal=document.getElementById("reportTotalHours");
+  const reportRegular=document.getElementById("reportRegularHours");
+  const reportOvertime=document.getElementById("reportOvertimeHours");
+  const chartTotal=document.getElementById("chartMonthHours");
+  const chart=document.getElementById("hoursChart");
+  if(!chart) return;
+
+  const total={all:0,regular:0,ot15:0,ot20:0};
+  const byDay=new Map();
+  entries.forEach(e=>{
+    const b=entryPayBreakdown(e,settings);
+    total.all+=b.total; total.regular+=b.base+b.extraNormal; total.ot15+=b.overtime15; total.ot20+=b.overtime20;
+    const day=Number(e.date.slice(-2));
+    const d=byDay.get(day)||{regular:0,ot15:0,ot20:0};
+    d.regular+=b.base+b.extraNormal; d.ot15+=b.overtime15; d.ot20+=b.overtime20;
+    byDay.set(day,d);
+  });
+  if(reportTotal) reportTotal.textContent=fmtMinutes(total.all);
+  if(reportRegular) reportRegular.textContent=fmtMinutes(total.regular);
+  if(reportOvertime) reportOvertime.textContent=fmtMinutes(total.ot15+total.ot20);
+  if(chartTotal) chartTotal.textContent=fmtMinutes(total.all);
+
+  const days=[...byDay.keys()].sort((a,b)=>a-b);
+  const max=Math.max(60,...days.map(day=>{const d=byDay.get(day);return d.regular+d.ot15+d.ot20}));
+  chart.innerHTML=days.length?days.map(day=>{
+    const d=byDay.get(day);
+    const rh=Math.max(2,Math.round(d.regular/max*150));
+    const a=Math.max(0,Math.round(d.ot15/max*150));
+    const b=Math.max(0,Math.round(d.ot20/max*150));
+    return `<div class="day-chart-column"><div class="stacked-bar"><span class="segment ot20" style="height:${b}px"></span><span class="segment ot15" style="height:${a}px"></span><span class="segment regular" style="height:${rh}px"></span></div><small>${day}</small></div>`;
+  }).join(""):`<div class="empty chart-empty">No hours recorded for this month.</div>`;
+}
+
 async function render(){
   const entries=(await getAllEntries()).filter(e=>e.date.startsWith(monthFilter.value)).sort((a,b)=>b.date.localeCompare(a.date)||b.start.localeCompare(a.start));
+  const settings=await getSettings();
   const total=entries.reduce((a,e)=>a+entryMinutes(e),0);monthHours.textContent=fmtMinutes(total);
+  renderHoursReport(entries,settings);
   entriesList.innerHTML=entries.length?entries.map(e=>`<div class="entry-item" data-id="${e.id}"><div class="entry-main"><strong>${new Date(e.date+"T12:00").toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"})}</strong><span>${entryPeriodsText(e)} · Break ${e.breakMinutes||0}m${e.notes?` · ${e.notes}`:""}</span></div><div class="entry-hours">${fmtMinutes(entryMinutes(e))}</div></div>`).join(""):`<div class="empty">No entries for this month.</div>`;
   document.querySelectorAll(".entry-item").forEach(el=>el.onclick=()=>openEdit(Number(el.dataset.id)));
 }

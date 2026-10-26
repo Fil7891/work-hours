@@ -5,21 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b4fb3">
   <title>Salary</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
-  <link rel="stylesheet" href="css/style.css?v=13">
+  <link rel="manifest" href="manifest.json?v=14">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/work-hours-v14-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/work-hours-v14-180.png">
+  <link rel="stylesheet" href="css/style.css?v=14">
 </head>
 <body>
 <header class="topbar">
-  <div><div class="eyebrow">Monthly pay estimate</div><h1>Salary</h1></div>
+  <div><div class="eyebrow">Your pay at a glance</div><h1>Summary</h1></div>
 </header>
 
 <main class="container">
+  <nav class="view-tabs" aria-label="Primary views">
+    <a href="index.html" class="">Calendar</a>
+    <a href="salary.html" class="active">Summary</a>
+    <a href="timesheets.html" class="">Reports</a>
+  </nav>
   <section class="card filters">
     <label>Pay cycle
       <input type="month" id="salaryMonth">
     </label>
+  </section>
+
+  <section class="pay-hero-card">
+    <div class="pay-hero-copy">
+      <span>Estimated net pay</span>
+      <strong id="heroNetPay">$0.00</strong>
+      <small id="heroPayPeriod">Selected pay cycle</small>
+    </div>
+    <div class="hero-pill"><span>Total hours</span><strong id="heroTotalHours">0h 00m</strong></div>
   </section>
 
   <section class="card pay-cycle-card">
@@ -35,6 +49,18 @@
     <p class="small muted">
       The cycle starts on the Monday after the previous pay cycle closes and ends on the Saturday before the week containing the last Thursday of the selected month.
     </p>
+  </section>
+
+  <section class="card visual-card">
+    <div class="section-head">
+      <div><h2>Income vs deductions</h2><p class="small muted">A clear view of where the pay cycle goes.</p></div>
+    </div>
+    <div id="incomeDeductionChart" class="money-chart" aria-label="Income and deduction chart"></div>
+  </section>
+
+  <section class="card visual-card">
+    <div class="section-head"><div><h2>Pay period breakdown</h2><p class="small muted">Hours by pay type.</p></div></div>
+    <div id="payHoursBreakdown" class="breakdown-list"></div>
   </section>
 
   <section class="card salary-card">
@@ -79,17 +105,17 @@
     </div>
   </section>
 
-  <nav class="bottom-nav">
-    <a href="index.html">Calendar</a>
-    <a href="timesheets.html">Timesheets</a>
-    <a href="salary.html" class="active">Salary</a>
-    <a href="tax-year.html">Tax Year</a>
-    <a href="settings.html">Settings</a>
+  <nav class="bottom-nav app-bottom-nav">
+    <a href="index.html" class=""><span class="nav-glyph">⌂</span><span>Home</span></a>
+    <a href="salary.html" class="active"><span class="nav-glyph">▥</span><span>Summary</span></a>
+    <a href="timesheets.html" class=""><span class="nav-glyph">▤</span><span>Reports</span></a>
+    <a href="tax-year.html" class=""><span class="nav-glyph">◔</span><span>Tax</span></a>
+    <a href="settings.html" class=""><span class="nav-glyph">⚙</span><span>Settings</span></a>
   </nav>
 </main>
 
-<script src="js/db.js"></script>
-<script src="js/tax-table.js"></script>
-<script src="js/salary.js"></script>
+<script src="js/db.js?v=14"></script>
+<script src="js/tax-table.js?v=14"></script>
+<script src="js/salary.js?v=14"></script>
 </body>
 </html>
