@@ -1058,3 +1058,28 @@ body{
   .invoice-table th{-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#0c5db9!important;color:#fff!important}
   .invoice-period-band,.invoice-total-final{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+
+
+/* V17 — settings moved to top-right */
+.top-settings-btn{
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:14px;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  text-decoration:none;
+  font-size:20px;
+  line-height:1;
+  backdrop-filter:blur(10px);
+  box-shadow:0 6px 16px rgba(0,28,70,.12);
+  transition:transform var(--ease),background var(--ease),border-color var(--ease);
+}
+.top-settings-btn:hover{
+  background:rgba(255,255,255,.18);
+  border-color:rgba(255,255,255,.38);
+}
+.top-settings-btn:active{transform:scale(.96)}

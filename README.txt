@@ -198,3 +198,12 @@ Added Invoice page:
 - Print / Save as PDF from the browser.
 - TFN number is intentionally not stored or printed.
 - Existing database schema, work entries, salary, tax, reports and bulk planning are unchanged.
+
+
+VERSION 17
+----------
+Small navigation update:
+- Settings removed from the bottom navigation.
+- Settings moved to a top-right header button.
+- Bottom navigation is back to five items.
+- No calculations, data, invoice, salary, tax, report or calendar behaviour changed.
