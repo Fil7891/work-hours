@@ -1,9 +1,9 @@
-const CACHE="work-hours-v20";
+const CACHE="work-hours-v21";
 const ASSETS=[
   "./","index.html","timesheets.html","salary.html","invoice.html","tax-year.html","settings.html",
-  "css/style.css?v=20","js/db.js?v=20","js/app.js?v=20","js/timesheets.js?v=20",
-  "js/salary.js?v=20","js/invoice.js?v=20","js/tax-year.js?v=20","js/settings.js?v=20","js/tax-table.js?v=20",
-  "manifest.json?v=20","icons/work-hours-v14-180.png","icons/work-hours-v14-192.png","icons/work-hours-v14-512.png"
+  "css/style.css?v=21","js/db.js?v=21","js/app.js?v=21","js/timesheets.js?v=21",
+  "js/salary.js?v=21","js/invoice.js?v=21","js/tax-year.js?v=21","js/settings.js?v=21","js/tax-table.js?v=21",
+  "manifest.json?v=21","icons/work-hours-v14-180.png","icons/work-hours-v14-192.png","icons/work-hours-v14-512.png"
 ];
 
 self.addEventListener("install",event=>{

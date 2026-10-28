@@ -1487,3 +1487,191 @@ body{
     margin-left:auto!important;
   }
 }
+
+
+/* V21 — professional centered A4 invoice layout
+   Uses an explicit document width so browser print-margin settings cannot
+   push content against the physical page edges. */
+@media print{
+  @page{
+    size:A4 portrait;
+    margin:0;
+  }
+
+  html,
+  body{
+    width:210mm!important;
+    min-width:210mm!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+
+  .container.invoice-page{
+    width:210mm!important;
+    max-width:210mm!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  .invoice-document,
+  .invoice-worklog{
+    box-sizing:border-box!important;
+    width:174mm!important;
+    max-width:174mm!important;
+    min-width:174mm!important;
+    margin-left:auto!important;
+    margin-right:auto!important;
+    padding:10mm 0 8mm!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+
+  .invoice-document{
+    min-height:297mm!important;
+    page-break-after:always!important;
+    break-after:page!important;
+  }
+
+  .invoice-worklog{
+    min-height:297mm!important;
+    page-break-before:always!important;
+    break-before:page!important;
+  }
+
+  .invoice-doc-head,
+  .worklog-head{
+    padding-bottom:7mm!important;
+    gap:8mm!important;
+  }
+
+  .invoice-parties{
+    padding:8mm 0!important;
+    gap:12mm!important;
+  }
+
+  .invoice-period-band{
+    margin-bottom:7mm!important;
+    padding:4mm!important;
+  }
+
+  .invoice-table-wrap,
+  .worklog-table-wrap{
+    width:174mm!important;
+    max-width:174mm!important;
+    overflow:visible!important;
+  }
+
+  .invoice-table,
+  .worklog-table{
+    width:174mm!important;
+    max-width:174mm!important;
+    table-layout:fixed!important;
+  }
+
+  .invoice-totals{
+    width:78mm!important;
+    max-width:78mm!important;
+    margin-top:7mm!important;
+    margin-left:auto!important;
+    margin-right:0!important;
+  }
+
+  .worklog-summary{
+    width:78mm!important;
+    max-width:78mm!important;
+    margin-top:7mm!important;
+    margin-left:auto!important;
+    margin-right:0!important;
+  }
+
+  .invoice-table th,
+  .invoice-table td{
+    padding:3.2mm 2.6mm!important;
+    font-size:10pt!important;
+  }
+
+  .invoice-table th{
+    font-size:9pt!important;
+  }
+
+  .worklog-table th,
+  .worklog-table td{
+    padding:1.65mm 1.4mm!important;
+    font-size:7.8pt!important;
+    line-height:1.25!important;
+  }
+
+  .worklog-table th{
+    font-size:7.3pt!important;
+  }
+
+  .worklog-head h2{
+    font-size:19pt!important;
+  }
+
+  .invoice-brand h2{
+    font-size:17pt!important;
+  }
+
+  .invoice-meta,
+  .worklog-meta{
+    width:56mm!important;
+  }
+
+  .invoice-brand{
+    width:auto!important;
+    flex:1 1 auto!important;
+  }
+
+  .invoice-period-band{
+    grid-template-columns:78mm 40mm 40mm!important;
+  }
+
+  .invoice-table th:nth-child(1),
+  .invoice-table td:nth-child(1){width:60mm!important}
+  .invoice-table th:nth-child(2),
+  .invoice-table td:nth-child(2){width:33mm!important}
+  .invoice-table th:nth-child(3),
+  .invoice-table td:nth-child(3){width:34mm!important}
+  .invoice-table th:nth-child(4),
+  .invoice-table td:nth-child(4){width:47mm!important}
+
+  .worklog-table th:nth-child(1),
+  .worklog-table td:nth-child(1){width:31mm!important}
+  .worklog-table th:nth-child(2),
+  .worklog-table td:nth-child(2){width:38mm!important}
+  .worklog-table th:nth-child(3),
+  .worklog-table td:nth-child(3){width:18mm!important}
+  .worklog-table th:nth-child(4),
+  .worklog-table td:nth-child(4){width:20mm!important}
+  .worklog-table th:nth-child(5),
+  .worklog-table td:nth-child(5){width:44mm!important}
+  .worklog-table th:nth-child(6),
+  .worklog-table td:nth-child(6){width:23mm!important}
+
+  .invoice-table .money,
+  .worklog-table .money{
+    text-align:right!important;
+  }
+
+  .invoice-table th,
+  .worklog-table th{
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+
+  .invoice-total-final{
+    font-size:15pt!important;
+    padding:4mm!important;
+  }
+
+  .worklog-table tr{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+  }
+}
