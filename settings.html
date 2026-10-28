@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b4fb3">
   <title>Settings</title>
-  <link rel="manifest" href="manifest.json?v=15">
+  <link rel="manifest" href="manifest.json?v=16">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/work-hours-v14-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/work-hours-v14-180.png">
-  <link rel="stylesheet" href="css/style.css?v=15">
+  <link rel="stylesheet" href="css/style.css?v=16">
 </head>
 <body>
 <header class="topbar">
@@ -58,6 +58,48 @@
     <div id="saveMessage" class="success-text"></div>
   </form>
 
+
+  <section id="invoiceDetails" class="card invoice-settings-card">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow dark">Invoice profile</div>
+        <h2>Your & company details</h2>
+      </div>
+    </div>
+    <p class="muted">These details are stored only in this app on your device and are reused on the Invoice page.</p>
+    <form id="invoiceProfileForm" class="form-card">
+      <div class="invoice-settings-group">
+        <h3>Your details</h3>
+        <label>Full name<input type="text" id="yourName" autocomplete="name"></label>
+        <label>Business / trading name (optional)<input type="text" id="yourBusiness"></label>
+        <label>ABN (optional)<input type="text" id="yourAbn" inputmode="numeric" placeholder="11 digits"></label>
+        <label>Address<textarea id="yourAddress" rows="2"></textarea></label>
+        <div class="two-col">
+          <label>Email<input type="email" id="yourEmail" autocomplete="email"></label>
+          <label>Phone<input type="tel" id="yourPhone" autocomplete="tel"></label>
+        </div>
+      </div>
+
+      <div class="invoice-settings-group">
+        <h3>Paying company</h3>
+        <label>Company / client name<input type="text" id="clientName"></label>
+        <label>Company ABN (optional)<input type="text" id="clientAbn" inputmode="numeric" placeholder="11 digits"></label>
+        <label>Company address<textarea id="clientAddress" rows="2"></textarea></label>
+        <div class="two-col">
+          <label>Email<input type="email" id="clientEmail"></label>
+          <label>Phone<input type="tel" id="clientPhone"></label>
+        </div>
+      </div>
+
+      <label>Default invoice note
+        <textarea id="invoiceNote" rows="3" placeholder="Optional payment or reference note"></textarea>
+      </label>
+      <div class="info-box">For privacy, the app does not ask you to store or print your Tax File Number. “TFN” selects the PAYG-withholding style of document only.</div>
+      <button class="primary big" type="submit">Save Invoice Details</button>
+      <div id="invoiceProfileMessage" class="success-text"></div>
+    </form>
+  </section>
+
   <section class="card">
     <h2>Backup</h2>
     <p class="muted">Your data is stored on this device. Export a backup regularly.</p>
@@ -73,12 +115,13 @@
     <a href="index.html" class=""><span class="nav-glyph">⌂</span><span>Home</span></a>
     <a href="salary.html" class=""><span class="nav-glyph">▥</span><span>Summary</span></a>
     <a href="timesheets.html" class=""><span class="nav-glyph">▤</span><span>Reports</span></a>
+    <a href="invoice.html" class=""><span class="nav-glyph">$</span><span>Invoice</span></a>
     <a href="tax-year.html" class=""><span class="nav-glyph">◔</span><span>Tax</span></a>
     <a href="settings.html" class="active"><span class="nav-glyph">⚙</span><span>Settings</span></a>
   </nav>
 </main>
 
-<script src="js/db.js?v=15"></script>
-<script src="js/settings.js?v=15"></script>
+<script src="js/db.js?v=16"></script>
+<script src="js/settings.js?v=16"></script>
 </body>
 </html>

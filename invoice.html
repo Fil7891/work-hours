@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4fb3">
+  <title>Invoice · Work Hours</title>
+  <link rel="manifest" href="manifest.json?v=16">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/work-hours-v14-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/work-hours-v14-180.png">
+  <link rel="stylesheet" href="css/style.css?v=16">
+</head>
+<body>
+<header class="topbar invoice-app-header">
+  <div><div class="eyebrow">Payment document</div><h1>Invoice</h1></div>
+</header>
+
+<main class="container invoice-page">
+  <section class="card invoice-controls no-print">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow dark">Create invoice</div>
+        <h2>Choose payment cycle</h2>
+      </div>
+    </div>
+
+    <div class="invoice-control-grid">
+      <label>Payment month
+        <input type="month" id="invoiceMonth">
+      </label>
+      <label>Invoice type
+        <select id="invoiceType">
+          <option value="TFN">TFN — show PAYG withholding</option>
+          <option value="ABN">ABN — gross only</option>
+        </select>
+      </label>
+      <label>Invoice number
+        <input type="text" id="invoiceNumber" placeholder="INV-2026-10">
+      </label>
+      <label>Invoice date
+        <input type="date" id="invoiceDate">
+      </label>
+    </div>
+
+    <div class="invoice-actions">
+      <a class="secondary invoice-settings-link" href="settings.html#invoiceDetails">Edit invoice details</a>
+      <button id="printInvoiceBtn" class="primary" type="button">Print / Save PDF</button>
+    </div>
+    <div id="invoiceWarning" class="warning-text hidden"></div>
+  </section>
+
+  <section id="invoiceDocument" class="invoice-document">
+    <div class="invoice-doc-head">
+      <div class="invoice-brand">
+        <img src="icons/work-hours-v14-192.png" alt="">
+        <div>
+          <div class="invoice-doc-label" id="documentTypeLabel">TFN PAYMENT STATEMENT</div>
+          <h2 id="documentOwnerName">Your name</h2>
+          <div id="documentOwnerContact" class="invoice-muted"></div>
+        </div>
+      </div>
+      <div class="invoice-meta">
+        <div><span>Invoice no.</span><strong id="documentInvoiceNumber">—</strong></div>
+        <div><span>Date</span><strong id="documentInvoiceDate">—</strong></div>
+      </div>
+    </div>
+
+    <div class="invoice-parties">
+      <div>
+        <span class="invoice-caption">FROM</span>
+        <strong id="fromName">Your name</strong>
+        <div id="fromBusiness"></div>
+        <div id="fromAbn"></div>
+        <div id="fromAddress"></div>
+        <div id="fromContact"></div>
+      </div>
+      <div>
+        <span class="invoice-caption">BILL TO</span>
+        <strong id="clientName">Company name</strong>
+        <div id="clientAbn"></div>
+        <div id="clientAddress"></div>
+        <div id="clientContact"></div>
+      </div>
+    </div>
+
+    <div class="invoice-period-band">
+      <div><span>Payment cycle</span><strong id="invoiceCycle">—</strong></div>
+      <div><span>Total hours</span><strong id="invoiceTotalHours">0h 00m</strong></div>
+      <div><span>Hourly rate</span><strong id="invoiceHourlyRate">$0.00</strong></div>
+    </div>
+
+    <div class="invoice-table-wrap">
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Hours</th>
+            <th>Rate</th>
+            <th class="money">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="invoiceLineItems"></tbody>
+      </table>
+    </div>
+
+    <div class="invoice-totals">
+      <div><span>Gross earnings</span><strong id="invoiceGross">$0.00</strong></div>
+      <div id="invoiceTaxRow"><span>PAYG withholding</span><strong id="invoiceTax">-$0.00</strong></div>
+      <div id="invoiceDeductionsRow"><span>Other deductions</span><strong id="invoiceDeductions">-$0.00</strong></div>
+      <div id="invoiceNetRow" class="invoice-total-final"><span>Net payable</span><strong id="invoiceNet">$0.00</strong></div>
+      <div id="invoiceAbnTotalRow" class="invoice-total-final hidden"><span>Total payable</span><strong id="invoiceAbnTotal">$0.00</strong></div>
+    </div>
+
+    <div class="invoice-notes">
+      <div id="invoiceModeNote"></div>
+      <div id="invoiceUserNote"></div>
+    </div>
+
+    <footer class="invoice-footer">
+      Generated from recorded Work Hours entries for the selected payment cycle.
+    </footer>
+  </section>
+
+  <nav class="bottom-nav app-bottom-nav no-print">
+    <a href="index.html"><span class="nav-glyph">⌂</span><span>Home</span></a>
+    <a href="salary.html"><span class="nav-glyph">▥</span><span>Summary</span></a>
+    <a href="timesheets.html"><span class="nav-glyph">▤</span><span>Reports</span></a>
+    <a href="invoice.html" class="active"><span class="nav-glyph">$</span><span>Invoice</span></a>
+    <a href="tax-year.html"><span class="nav-glyph">◔</span><span>Tax</span></a>
+    <a href="settings.html"><span class="nav-glyph">⚙</span><span>Settings</span></a>
+  </nav>
+</main>
+
+<script src="js/db.js?v=16"></script>
+<script src="js/tax-table.js?v=16"></script>
+<script src="js/invoice.js?v=16"></script>
+</body>
+</html>

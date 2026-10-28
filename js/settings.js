@@ -8,6 +8,12 @@ async function load(){
   document.getElementById("superRate").value=s.superRate;
   document.getElementById("includeOvertimeInSuper").value=String(s.includeOvertimeInSuper);
   document.getElementById("otherDeductions").value=s.otherDeductions;
+
+  const p=(await getKV(STORE_SETTINGS,"invoiceProfile")) || {};
+  for(const id of ["yourName","yourBusiness","yourAbn","yourAddress","yourEmail","yourPhone","clientName","clientAbn","clientAddress","clientEmail","clientPhone","invoiceNote"]){
+    const el=document.getElementById(id);
+    if(el) el.value=p[id] || "";
+  }
 }
 document.getElementById("settingsForm").addEventListener("submit",async e=>{
   e.preventDefault();
@@ -23,8 +29,20 @@ document.getElementById("settingsForm").addEventListener("submit",async e=>{
   msg.textContent="Settings saved.";
   setTimeout(()=>msg.textContent="",2500);
 });
+
+document.getElementById("invoiceProfileForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const ids=["yourName","yourBusiness","yourAbn","yourAddress","yourEmail","yourPhone","clientName","clientAbn","clientAddress","clientEmail","clientPhone","invoiceNote"];
+  const profile={};
+  for(const id of ids) profile[id]=document.getElementById(id).value.trim();
+  await setKV(STORE_SETTINGS,"invoiceProfile",profile);
+  const msg=document.getElementById("invoiceProfileMessage");
+  msg.textContent="Invoice details saved.";
+  setTimeout(()=>msg.textContent="",2500);
+});
+
 document.getElementById("backupBtn").onclick=async()=>{
-  const data={version:2,exportedAt:new Date().toISOString(),entries:await getAllEntries(),settings:await getSettings()};
+  const data={version:2,exportedAt:new Date().toISOString(),entries:await getAllEntries(),settings:await getSettings(),invoiceProfile:(await getKV(STORE_SETTINGS,"invoiceProfile"))||{}};
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}));
   a.download=`work-hours-backup-${ymd()}.json`;
@@ -43,6 +61,7 @@ document.getElementById("restoreInput").onchange=async e=>{
     }
     if("claimsTaxFreeThreshold" in s) await setKV(STORE_SETTINGS,"claimsTaxFreeThreshold",Boolean(s.claimsTaxFreeThreshold));
     if("includeOvertimeInSuper" in s) await setKV(STORE_SETTINGS,"includeOvertimeInSuper",Boolean(s.includeOvertimeInSuper));
+    if(data.invoiceProfile && typeof data.invoiceProfile==="object") await setKV(STORE_SETTINGS,"invoiceProfile",data.invoiceProfile);
     alert("Backup imported."); load();
   }catch{alert("Invalid backup file.");}
 };

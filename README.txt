@@ -184,3 +184,17 @@ Added Bulk Work Planner on the Calendar page.
 - Dates that already have work entries are always skipped, never overwritten.
 - Every generated date is stored as a normal entry and can be edited later with the existing daily editor.
 - Existing salary, tax, reports, backup/restore and IndexedDB structures are unchanged.
+
+
+VERSION 16
+----------
+Added Invoice page:
+- Select the same employer payment month/cycle used by Salary.
+- TFN mode: gross, estimated PAYG withholding, other deductions and net payable.
+- ABN mode: gross/total payable only.
+- Invoice line items show regular, normal extra, 1.5x and 2.0x hours where applicable.
+- Save your personal and paying-company details in Settings.
+- Invoice number and invoice date are editable.
+- Print / Save as PDF from the browser.
+- TFN number is intentionally not stored or printed.
+- Existing database schema, work entries, salary, tax, reports and bulk planning are unchanged.
