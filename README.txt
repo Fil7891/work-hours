@@ -217,3 +217,16 @@ Icon cleanup only:
 - Removed the solid square generated icon from Invoice.
 - Made the top-right Settings gear clearly visible on the white header.
 - No functionality or calculations changed.
+
+
+VERSION 19
+----------
+Invoice PDF update:
+- Page 1 remains the invoice/payment statement.
+- App logo is hidden from printed/PDF output.
+- TFN/ABN explanatory note and generated footer are hidden from printed/PDF output.
+- Page 2 is a detailed work log for the selected payment cycle.
+- Work log shows each recorded date, work period, break, total hours, pay breakdown and gross amount.
+- Page 2 includes cycle total hours and gross earnings.
+- On-screen app invoice remains branded.
+- No work-hour, salary, PAYG, tax, report or database logic changed.

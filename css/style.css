@@ -1117,3 +1117,208 @@ body{
   background:#eaf3ff !important;
   border-color:#c9ddf4 !important;
 }
+
+
+/* V19 — two-page invoice PDF */
+.invoice-worklog{
+  margin-top:18px;
+  background:#fff;
+  border:1px solid #dbe5ef;
+  border-radius:24px;
+  padding:30px;
+  box-shadow:var(--shadow);
+}
+.worklog-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:24px;
+  padding-bottom:20px;
+  border-bottom:2px solid #e7eef6;
+}
+.worklog-head h2{
+  margin:5px 0 4px;
+  color:#0b2648;
+  font-size:24px;
+  letter-spacing:-.03em;
+}
+.worklog-meta{
+  display:grid;
+  gap:10px;
+  min-width:200px;
+}
+.worklog-meta div{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+}
+.worklog-meta span{
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.08em;
+  color:#8393a6;
+  text-transform:uppercase;
+}
+.worklog-meta strong{
+  font-size:13px;
+  color:#183352;
+}
+.worklog-table-wrap{
+  margin-top:22px;
+  overflow-x:auto;
+}
+.worklog-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+.worklog-table th{
+  padding:10px 9px;
+  text-align:left;
+  background:#0c5db9;
+  color:#fff;
+  font-size:10px;
+  white-space:nowrap;
+}
+.worklog-table th:first-child{border-radius:10px 0 0 10px}
+.worklog-table th:last-child{border-radius:0 10px 10px 0}
+.worklog-table td{
+  padding:10px 9px;
+  border-bottom:1px solid #e8eef5;
+  color:#35506d;
+  vertical-align:top;
+}
+.worklog-table td strong{color:#173759}
+.worklog-table .money{text-align:right;white-space:nowrap}
+.worklog-summary{
+  width:min(100%,360px);
+  margin:20px 0 0 auto;
+  display:grid;
+  gap:3px;
+}
+.worklog-summary>div{
+  display:flex;
+  justify-content:space-between;
+  gap:18px;
+  padding:10px 4px;
+  border-bottom:1px solid #e8eef5;
+}
+.worklog-summary span{color:#61778f}
+.worklog-summary strong{color:#173759}
+
+@media(max-width:620px){
+  .invoice-worklog{padding:20px 14px;border-radius:19px}
+  .worklog-head{display:grid}
+  .worklog-meta{min-width:0}
+}
+
+/* Print rules override earlier invoice print styles */
+@media print{
+  @page{
+    size:A4;
+    margin:12mm;
+  }
+
+  html,body{
+    background:#fff!important;
+  }
+
+  body{
+    padding:0!important;
+    margin:0!important;
+  }
+
+  .topbar,
+  .no-print,
+  .bottom-nav{
+    display:none!important;
+  }
+
+  .container.invoice-page{
+    max-width:none!important;
+    width:100%!important;
+    padding:0!important;
+    margin:0!important;
+  }
+
+  .invoice-document,
+  .invoice-worklog{
+    width:100%!important;
+    max-width:none!important;
+    border:0!important;
+    box-shadow:none!important;
+    border-radius:0!important;
+    padding:0!important;
+    margin:0!important;
+    background:#fff!important;
+  }
+
+  .invoice-document{
+    min-height:calc(297mm - 24mm);
+    page-break-after:always;
+    break-after:page;
+  }
+
+  .invoice-worklog{
+    min-height:calc(297mm - 24mm);
+    page-break-before:always;
+    break-before:page;
+  }
+
+  .print-hide{
+    display:none!important;
+  }
+
+  .invoice-brand{
+    align-items:flex-start!important;
+  }
+
+  .invoice-brand>div{
+    margin-left:0!important;
+  }
+
+  .invoice-notes,
+  .invoice-footer{
+    display:none!important;
+  }
+
+  .invoice-table th,
+  .worklog-table th{
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+    background:#0c5db9!important;
+    color:#fff!important;
+  }
+
+  .invoice-period-band,
+  .invoice-total-final{
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+
+  .worklog-table{
+    font-size:10.5px!important;
+  }
+
+  .worklog-table th{
+    font-size:9px!important;
+  }
+
+  .worklog-table td{
+    padding:7px 6px!important;
+  }
+
+  .worklog-table tr{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+
+  .worklog-head{
+    margin-bottom:12px;
+  }
+
+  .worklog-table-wrap{
+    margin-top:14px;
+    overflow:visible!important;
+  }
+}

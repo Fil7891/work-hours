@@ -60,6 +60,52 @@ function defaultInvoiceNumber(){
   return `INV-${invoiceMonth.value || monthKey()}`;
 }
 
+
+function workLogPayLabel(entry,b,s){
+  const parts=[];
+  if(b.base>0) parts.push(`${fmtMinutes(b.base)} regular`);
+  if(b.extraNormal>0) parts.push(`${fmtMinutes(b.extraNormal)} @ 1.0×`);
+  if(b.overtime15>0) parts.push(`${fmtMinutes(b.overtime15)} @ ${s.overtime15Multiplier}×`);
+  if(b.overtime20>0) parts.push(`${fmtMinutes(b.overtime20)} @ ${s.overtime20Multiplier}×`);
+  if(entry.travelAll15===true && b.overtime15>0){
+    return `${fmtMinutes(b.overtime15)} travel @ ${s.overtime15Multiplier}×`;
+  }
+  return parts.join(" · ") || "—";
+}
+
+function renderWorkLog(entries,s,cycle,pay){
+  const sorted=[...entries].sort((a,b)=>a.date.localeCompare(b.date) || Number(a.id||0)-Number(b.id||0));
+  setText("workLogCycle",`${fmtDate(cycle.start)} – ${fmtDate(cycle.end)}`);
+  setText("workLogInvoiceNumber",invoiceNumber.value||"—");
+  setText("workLogTotalHours",fmtMinutes(pay.total));
+  setText("workLogSummaryHours",fmtMinutes(pay.total));
+  setText("workLogSummaryGross",fmtMoney(pay.gross));
+
+  const body=document.getElementById("workLogRows");
+  if(!sorted.length){
+    body.innerHTML='<tr><td colspan="6" class="empty">No work entries were found for this payment cycle.</td></tr>';
+    return;
+  }
+
+  body.innerHTML=sorted.map(entry=>{
+    const b=entryPayBreakdown(entry,s);
+    const date=new Date(entry.date+"T12:00:00").toLocaleDateString("en-AU",{
+      weekday:"short",day:"2-digit",month:"short",year:"numeric"
+    });
+    const periods=entryPeriodsText(entry)||"—";
+    const breakText=`${Number(entry.breakMinutes||0)} min`;
+    const breakdown=workLogPayLabel(entry,b,s);
+    return `<tr>
+      <td><strong>${date}</strong></td>
+      <td>${periods}</td>
+      <td>${breakText}</td>
+      <td>${fmtMinutes(b.total)}</td>
+      <td>${breakdown}</td>
+      <td class="money">${fmtMoney(b.gross)}</td>
+    </tr>`;
+  }).join("");
+}
+
 async function renderInvoice(){
   const warning=document.getElementById("invoiceWarning");
   warning.classList.add("hidden");
@@ -117,6 +163,7 @@ async function renderInvoice(){
   setText("invoiceDeductions","-"+fmtMoney(deductions));
   setText("invoiceNet",fmtMoney(net));
   setText("invoiceAbnTotal",fmtMoney(pay.gross));
+  renderWorkLog(entries,s,cycle,pay);
 
   const taxRow=document.getElementById("invoiceTaxRow");
   const deductionsRow=document.getElementById("invoiceDeductionsRow");

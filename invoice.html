@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b4fb3">
   <title>Invoice · Work Hours</title>
-  <link rel="manifest" href="manifest.json?v=18">
+  <link rel="manifest" href="manifest.json?v=19">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/work-hours-v14-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/work-hours-v14-180.png">
-  <link rel="stylesheet" href="css/style.css?v=18">
+  <link rel="stylesheet" href="css/style.css?v=19">
 </head>
 <body>
 <header class="topbar invoice-app-header">
@@ -53,7 +53,7 @@
   <section id="invoiceDocument" class="invoice-document">
     <div class="invoice-doc-head">
       <div class="invoice-brand">
-        <img src="icons/work-hours-v14-192.png" alt="">
+        <img class="invoice-app-logo print-hide" src="icons/work-hours-v14-192.png" alt="">
         <div>
           <div class="invoice-doc-label" id="documentTypeLabel">TFN PAYMENT STATEMENT</div>
           <h2 id="documentOwnerName">Your name</h2>
@@ -112,14 +112,50 @@
       <div id="invoiceAbnTotalRow" class="invoice-total-final hidden"><span>Total payable</span><strong id="invoiceAbnTotal">$0.00</strong></div>
     </div>
 
-    <div class="invoice-notes">
+    <div class="invoice-notes print-hide">
       <div id="invoiceModeNote"></div>
       <div id="invoiceUserNote"></div>
     </div>
 
-    <footer class="invoice-footer">
+    <footer class="invoice-footer print-hide">
       Generated from recorded Work Hours entries for the selected payment cycle.
     </footer>
+  </section>
+
+
+  <section id="invoiceWorkLog" class="invoice-worklog print-page-two">
+    <div class="worklog-head">
+      <div>
+        <div class="invoice-doc-label">WORK HOURS DETAIL</div>
+        <h2>Payment Cycle Work Log</h2>
+        <div id="workLogCycle" class="invoice-muted">—</div>
+      </div>
+      <div class="worklog-meta">
+        <div><span>Invoice no.</span><strong id="workLogInvoiceNumber">—</strong></div>
+        <div><span>Total hours</span><strong id="workLogTotalHours">0h 00m</strong></div>
+      </div>
+    </div>
+
+    <div class="worklog-table-wrap">
+      <table class="worklog-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Work period</th>
+            <th>Break</th>
+            <th>Total</th>
+            <th>Pay breakdown</th>
+            <th class="money">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="workLogRows"></tbody>
+      </table>
+    </div>
+
+    <div class="worklog-summary">
+      <div><span>Total cycle hours</span><strong id="workLogSummaryHours">0h 00m</strong></div>
+      <div><span>Gross earnings</span><strong id="workLogSummaryGross">$0.00</strong></div>
+    </div>
   </section>
 
   <nav class="bottom-nav app-bottom-nav no-print">
@@ -131,8 +167,8 @@
   </nav>
 </main>
 
-<script src="js/db.js?v=18"></script>
-<script src="js/tax-table.js?v=18"></script>
-<script src="js/invoice.js?v=18"></script>
+<script src="js/db.js?v=19"></script>
+<script src="js/tax-table.js?v=19"></script>
+<script src="js/invoice.js?v=19"></script>
 </body>
 </html>
