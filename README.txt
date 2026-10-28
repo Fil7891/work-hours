@@ -207,3 +207,13 @@ Small navigation update:
 - Settings moved to a top-right header button.
 - Bottom navigation is back to five items.
 - No calculations, data, invoice, salary, tax, report or calendar behaviour changed.
+
+
+VERSION 18
+----------
+Icon cleanup only:
+- Removed duplicate CSS-generated icons from bottom navigation.
+- Bottom navigation now shows only the existing lower HTML icon for each item.
+- Removed the solid square generated icon from Invoice.
+- Made the top-right Settings gear clearly visible on the white header.
+- No functionality or calculations changed.

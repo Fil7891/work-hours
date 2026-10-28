@@ -1083,3 +1083,37 @@ body{
   border-color:rgba(255,255,255,.38);
 }
 .top-settings-btn:active{transform:scale(.96)}
+
+
+/* V18 — icon cleanup */
+.app-bottom-nav a::before,
+.bottom-nav a::before,
+.bottom-nav a[href="invoice.html"]::before{
+  content:none !important;
+  display:none !important;
+  width:0 !important;
+  height:0 !important;
+  mask:none !important;
+  -webkit-mask:none !important;
+  background:none !important;
+}
+
+.nav-glyph{
+  display:block;
+  font-size:19px;
+  line-height:1;
+  font-weight:650;
+  color:currentColor;
+}
+
+.top-settings-btn{
+  color:var(--v14-navy) !important;
+  background:#f3f7fc !important;
+  border-color:#dce7f2 !important;
+  box-shadow:none !important;
+}
+.top-settings-btn:hover{
+  color:var(--v14-blue) !important;
+  background:#eaf3ff !important;
+  border-color:#c9ddf4 !important;
+}
