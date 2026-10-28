@@ -230,3 +230,14 @@ Invoice PDF update:
 - Page 2 includes cycle total hours and gross earnings.
 - On-screen app invoice remains branded.
 - No work-hour, salary, PAYG, tax, report or database logic changed.
+
+
+VERSION 20
+----------
+Invoice PDF print-fit fix:
+- Increased A4 print margins.
+- Added safe inner page padding.
+- Prevents right-edge clipping on page 1 and page 2.
+- Uses fixed table column widths for invoice and work-log tables.
+- Tightened print font sizes and spacing for reliable A4 output.
+- No invoice calculations or app functionality changed.

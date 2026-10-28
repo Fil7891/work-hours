@@ -1322,3 +1322,168 @@ body{
     overflow:visible!important;
   }
 }
+
+
+/* V20 — safer A4 invoice print fit */
+@media print{
+  @page{
+    size:A4 portrait;
+    margin:14mm 14mm 14mm 14mm;
+  }
+
+  html,body{
+    width:100%!important;
+    margin:0!important;
+    padding:0!important;
+    background:#fff!important;
+    overflow:visible!important;
+  }
+
+  .container.invoice-page{
+    width:auto!important;
+    max-width:none!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  .invoice-document,
+  .invoice-worklog{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0 auto!important;
+    padding:0 2mm!important;
+    overflow:visible!important;
+  }
+
+  .invoice-doc-head,
+  .invoice-parties,
+  .invoice-period-band,
+  .invoice-table-wrap,
+  .invoice-totals,
+  .worklog-head,
+  .worklog-table-wrap,
+  .worklog-summary{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+
+  .invoice-doc-head,
+  .worklog-head{
+    gap:14px!important;
+  }
+
+  .invoice-meta,
+  .worklog-meta{
+    min-width:0!important;
+    width:34%!important;
+  }
+
+  .invoice-brand{
+    min-width:0!important;
+    width:66%!important;
+  }
+
+  .invoice-brand>div,
+  .invoice-meta,
+  .worklog-meta{
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+  }
+
+  .invoice-parties{
+    gap:18px!important;
+  }
+
+  .invoice-parties>div{
+    min-width:0!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+  }
+
+  .invoice-period-band{
+    grid-template-columns:minmax(0,1.7fr) minmax(0,.8fr) minmax(0,.8fr)!important;
+    gap:8px!important;
+    padding:12px!important;
+  }
+
+  .invoice-period-band strong{
+    overflow-wrap:anywhere!important;
+  }
+
+  .invoice-table,
+  .worklog-table{
+    width:100%!important;
+    max-width:100%!important;
+    table-layout:fixed!important;
+    border-collapse:collapse!important;
+  }
+
+  .invoice-table th,
+  .invoice-table td,
+  .worklog-table th,
+  .worklog-table td{
+    box-sizing:border-box!important;
+    overflow-wrap:anywhere!important;
+    word-break:break-word!important;
+  }
+
+  .invoice-table th:nth-child(1),
+  .invoice-table td:nth-child(1){width:31%!important}
+  .invoice-table th:nth-child(2),
+  .invoice-table td:nth-child(2){width:19%!important}
+  .invoice-table th:nth-child(3),
+  .invoice-table td:nth-child(3){width:20%!important}
+  .invoice-table th:nth-child(4),
+  .invoice-table td:nth-child(4){width:30%!important}
+
+  .invoice-table th,
+  .invoice-table td{
+    padding:9px 8px!important;
+    font-size:10.5px!important;
+  }
+
+  .invoice-totals{
+    width:52%!important;
+    margin-left:auto!important;
+  }
+
+  .invoice-totals>div{
+    gap:10px!important;
+  }
+
+  .invoice-total-final{
+    font-size:16px!important;
+  }
+
+  .worklog-table th:nth-child(1),
+  .worklog-table td:nth-child(1){width:18%!important}
+  .worklog-table th:nth-child(2),
+  .worklog-table td:nth-child(2){width:22%!important}
+  .worklog-table th:nth-child(3),
+  .worklog-table td:nth-child(3){width:10%!important}
+  .worklog-table th:nth-child(4),
+  .worklog-table td:nth-child(4){width:12%!important}
+  .worklog-table th:nth-child(5),
+  .worklog-table td:nth-child(5){width:25%!important}
+  .worklog-table th:nth-child(6),
+  .worklog-table td:nth-child(6){width:13%!important}
+
+  .worklog-table th,
+  .worklog-table td{
+    padding:6px 5px!important;
+    font-size:9.5px!important;
+  }
+
+  .worklog-table th{
+    font-size:8.7px!important;
+  }
+
+  .worklog-summary{
+    width:48%!important;
+    margin-left:auto!important;
+  }
+}
