@@ -24,6 +24,9 @@ const daySummary = document.getElementById("daySummary");
 const dlg = document.getElementById("entryDialog");
 const form = document.getElementById("entryForm");
 const delBtn = document.getElementById("deleteEntryBtn");
+const bulkBtn = document.getElementById("bulkHoursBtn");
+const bulkDlg = document.getElementById("bulkEntryDialog");
+const bulkForm = document.getElementById("bulkEntryForm");
 
 let shownMonth = loadSelectedMonthDate();
 shownMonth = new Date(shownMonth.getFullYear(), shownMonth.getMonth(), 1);
@@ -258,8 +261,153 @@ async function updatePreview() {
   }
 }
 
-document.getElementById("prevMonth").onclick=async()=>{shownMonth=new Date(shownMonth.getFullYear(),shownMonth.getMonth()-1,1);selectedDate=localYmd(shownMonth);await renderCalendar();await renderSelectedDay();};
-document.getElementById("nextMonth").onclick=async()=>{shownMonth=new Date(shownMonth.getFullYear(),shownMonth.getMonth()+1,1);selectedDate=localYmd(shownMonth);await renderCalendar();await renderSelectedDay();};
+
+function parseLocalDate(value){
+  const [y,m,d]=value.split("-").map(Number);
+  return new Date(y,m-1,d,12,0,0,0);
+}
+
+function defaultBulkRange(){
+  const y=shownMonth.getFullYear();
+  const m=shownMonth.getMonth();
+  document.getElementById("bulkStartDate").value=localYmd(new Date(y,m,1));
+  document.getElementById("bulkEndDate").value=localYmd(new Date(y,m+1,0));
+}
+
+function selectedBulkWeekdays(){
+  return new Set(
+    [...document.querySelectorAll('#bulkEntryDialog .bulk-weekdays input[type="checkbox"]:checked')]
+      .map(input=>Number(input.value))
+  );
+}
+
+async function updateBulkPreview(){
+  const box=document.getElementById("bulkPreview");
+  const startValue=document.getElementById("bulkStartDate").value;
+  const endValue=document.getElementById("bulkEndDate").value;
+  const startTime=document.getElementById("bulkStartTime").value;
+  const endTime=document.getElementById("bulkEndTime").value;
+  const breakMinutes=Number(document.getElementById("bulkBreak").value||0);
+  const weekdays=selectedBulkWeekdays();
+
+  if(!startValue || !endValue || !startTime || !endTime || !weekdays.size){
+    box.innerHTML='<span class="muted small">Choose a date range, at least one weekday, and standard work times.</span>';
+    return;
+  }
+
+  const start=parseLocalDate(startValue);
+  const end=parseLocalDate(endValue);
+  if(end<start){
+    box.innerHTML='<span class="warning-text">The end date must be on or after the start date.</span>';
+    return;
+  }
+
+  const existingDates=new Set((await getAllEntries()).map(e=>e.date));
+  let planned=0, skipped=0;
+  for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){
+    if(!weekdays.has(d.getDay())) continue;
+    const ds=localYmd(d);
+    if(existingDates.has(ds)) skipped++;
+    else planned++;
+  }
+
+  const temp={periods:[{start:startTime,end:endTime}],start:startTime,end:endTime,breakMinutes};
+  const hours=fmtMinutes(entryMinutes(temp));
+  box.innerHTML=`
+    <div><span>New work days</span><strong>${planned}</strong></div>
+    <div><span>Already recorded</span><strong>${skipped} skipped</strong></div>
+    <div><span>Hours per day</span><strong>${hours}</strong></div>`;
+}
+
+function openBulkPlanner(){
+  defaultBulkRange();
+  document.getElementById("bulkNotes").value="";
+  updateBulkPreview();
+  bulkDlg.showModal();
+}
+
+bulkBtn.addEventListener("click",openBulkPlanner);
+document.getElementById("cancelBulkBtn").addEventListener("click",()=>bulkDlg.close());
+
+[
+  "bulkStartDate","bulkEndDate","bulkStartTime","bulkEndTime","bulkBreak"
+].forEach(id=>document.getElementById(id).addEventListener("input",updateBulkPreview));
+document.querySelectorAll('#bulkEntryDialog .bulk-weekdays input[type="checkbox"]').forEach(input=>{
+  input.addEventListener("change",updateBulkPreview);
+});
+
+bulkForm.addEventListener("submit",async event=>{
+  event.preventDefault();
+
+  const startValue=document.getElementById("bulkStartDate").value;
+  const endValue=document.getElementById("bulkEndDate").value;
+  const startTime=document.getElementById("bulkStartTime").value;
+  const endTime=document.getElementById("bulkEndTime").value;
+  const breakMinutes=Number(document.getElementById("bulkBreak").value||0);
+  const notes=document.getElementById("bulkNotes").value.trim();
+  const weekdays=selectedBulkWeekdays();
+
+  if(!startValue || !endValue || !startTime || !endTime){
+    alert("Complete the date range and standard work times.");
+    return;
+  }
+  if(!weekdays.size){
+    alert("Select at least one work day.");
+    return;
+  }
+
+  const start=parseLocalDate(startValue);
+  const end=parseLocalDate(endValue);
+  if(end<start){
+    alert("The end date must be on or after the start date.");
+    return;
+  }
+
+  const template={
+    start:startTime,
+    end:endTime,
+    periods:[{start:startTime,end:endTime}],
+    breakMinutes,
+    extraNormalHours:0,
+    overtime15Hours:0,
+    overtime20Hours:0,
+    travelAll15:false,
+    notes
+  };
+
+  if(entryMinutes(template)<=0){
+    alert("The standard work period must contain working time after the break.");
+    return;
+  }
+
+  const existingDates=new Set((await getAllEntries()).map(e=>e.date));
+  let created=0, skipped=0;
+
+  for(let d=new Date(start); d<=end; d.setDate(d.getDate()+1)){
+    if(!weekdays.has(d.getDay())) continue;
+    const date=localYmd(d);
+    if(existingDates.has(date)){
+      skipped++;
+      continue;
+    }
+    await addEntry({...template,date});
+    existingDates.add(date);
+    created++;
+  }
+
+  bulkDlg.close();
+  selectedDate=startValue;
+  shownMonth=new Date(start.getFullYear(),start.getMonth(),1);
+  saveSelectedMonthFromDate(shownMonth);
+  await renderCalendar();
+  await renderSelectedDay();
+
+  alert(`${created} work day${created===1?"":"s"} created.${skipped?` ${skipped} existing day${skipped===1?" was":"s were"} skipped.`:""}`);
+});
+
+
+document.getElementById("prevMonth").onclick=async()=>{shownMonth=new Date(shownMonth.getFullYear(),shownMonth.getMonth()-1,1);saveSelectedMonthFromDate(shownMonth);selectedDate=localYmd(shownMonth);await renderCalendar();await renderSelectedDay();};
+document.getElementById("nextMonth").onclick=async()=>{shownMonth=new Date(shownMonth.getFullYear(),shownMonth.getMonth()+1,1);saveSelectedMonthFromDate(shownMonth);selectedDate=localYmd(shownMonth);await renderCalendar();await renderSelectedDay();};
 addHoursBtn.onclick=()=>{clearForm();dlg.showModal();};
 document.getElementById("cancelDialogBtn").onclick=()=>dlg.close();
 function updateTravelModeUI(){

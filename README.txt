@@ -173,3 +173,14 @@ The manifest now uses new filenames:
 - icons/work-hours-v14-512.png
 and iPhone uses icons/work-hours-v14-180.png.
 This prevents the old icon URL from being reused from cache. Android launchers can still retain an installed icon; if it does not refresh after the V14 deployment, remove the installed PWA (do not clear Chrome site data) and install it again.
+
+
+VERSION 15
+----------
+Added Bulk Work Planner on the Calendar page.
+- Plan many standard work days across a date range/month.
+- Select weekdays (Mon-Fri by default).
+- Set one standard start time, finish time, break and optional note.
+- Dates that already have work entries are always skipped, never overwritten.
+- Every generated date is stored as a normal entry and can be edited later with the existing daily editor.
+- Existing salary, tax, reports, backup/restore and IndexedDB structures are unchanged.

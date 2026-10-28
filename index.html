@@ -7,10 +7,10 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Work Hours</title>
-  <link rel="manifest" href="manifest.json?v=14">
+  <link rel="manifest" href="manifest.json?v=15">
   <link rel="icon" type="image/png" sizes="192x192" href="icons/work-hours-v14-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icons/work-hours-v14-180.png">
-  <link rel="stylesheet" href="css/style.css?v=14">
+  <link rel="stylesheet" href="css/style.css?v=15">
 </head>
 <body>
 <header class="topbar">
@@ -56,7 +56,10 @@
         <div class="eyebrow dark">Selected day</div>
         <h2 id="selectedDateTitle">Select a date</h2>
       </div>
-      <button id="addHoursBtn" class="primary" disabled>+ Add hours</button>
+      <div class="selected-day-actions">
+        <button id="bulkHoursBtn" class="secondary">Plan multiple days</button>
+        <button id="addHoursBtn" class="primary" disabled>+ Add hours</button>
+      </div>
     </div>
 
     <div id="daySummary" class="day-summary hidden">
@@ -130,6 +133,56 @@
     </form>
   </dialog>
 
+
+  <dialog id="bulkEntryDialog">
+    <form id="bulkEntryForm" class="dialog-form">
+      <div>
+        <div class="eyebrow dark">Bulk work planner</div>
+        <h2>Plan multiple work days</h2>
+        <p class="small muted">Create the same standard work entry across a date range. Existing days are skipped automatically so nothing is overwritten.</p>
+      </div>
+
+      <div class="two-col">
+        <label>From date<input type="date" id="bulkStartDate" required></label>
+        <label>To date<input type="date" id="bulkEndDate" required></label>
+      </div>
+
+      <div class="bulk-weekdays-box">
+        <strong>Work days</strong>
+        <div class="bulk-weekdays">
+          <label><input type="checkbox" value="1" checked>Mon</label>
+          <label><input type="checkbox" value="2" checked>Tue</label>
+          <label><input type="checkbox" value="3" checked>Wed</label>
+          <label><input type="checkbox" value="4" checked>Thu</label>
+          <label><input type="checkbox" value="5" checked>Fri</label>
+          <label><input type="checkbox" value="6">Sat</label>
+          <label><input type="checkbox" value="0">Sun</label>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <label>Start time<input type="time" id="bulkStartTime" value="07:00" required></label>
+        <label>Finish time<input type="time" id="bulkEndTime" value="15:30" required></label>
+      </div>
+
+      <label>Break minutes<input type="number" id="bulkBreak" min="0" step="1" value="30" required></label>
+      <label>Notes<textarea id="bulkNotes" rows="2" placeholder="Optional note for all planned days"></textarea></label>
+
+      <label class="check-row bulk-safe-option">
+        <input type="checkbox" id="bulkSkipExisting" checked disabled>
+        <span><strong>Skip dates that already contain work entries</strong><small>Existing entries will never be changed by this planner.</small></span>
+      </label>
+
+      <div id="bulkPreview" class="bulk-preview"></div>
+
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button type="button" id="cancelBulkBtn" class="ghost">Cancel</button>
+        <button type="submit" class="primary">Create work days</button>
+      </div>
+    </form>
+  </dialog>
+
   <nav class="bottom-nav app-bottom-nav">
     <a href="index.html" class="active"><span class="nav-glyph">⌂</span><span>Home</span></a>
     <a href="salary.html" class=""><span class="nav-glyph">▥</span><span>Summary</span></a>
@@ -139,7 +192,7 @@
   </nav>
 </main>
 
-<script src="js/db.js?v=14"></script>
-<script src="js/app.js?v=14"></script>
+<script src="js/db.js?v=15"></script>
+<script src="js/app.js?v=15"></script>
 </body>
 </html>
